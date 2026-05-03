@@ -1,7 +1,28 @@
+/**
+ * merkle.js — Browser-side Merkle tree builder.
+ *
+ * Tree-building and proof-extraction algorithms are imported from the
+ * shared `merkle-core.js` so that the browser and server always use the
+ * **exact same** logic.  Only the ethers-backed hash function is defined
+ * locally (via `window.ethers`).
+ */
+
+import {
+  buildMerkleLevels,
+  buildMerkleProof,
+  normalizeBytes32,
+  normalizeMerkleOptions
+} from "./merkle-core.js";
+
 const { ethers } = window;
 
-const BYTES32_PATTERN = /^0x[a-fA-F0-9]{64}$/;
+// Re-export the shared proof builder so existing consumers keep working.
+export { buildMerkleProof };
 
+/**
+ * Synchronously build all Merkle artifacts (root, leaves, levels) from
+ * an array of leaf hashes.
+ */
 export function buildMerkleArtifacts(leafHashes, options = {}) {
   if (!ethers) {
     throw new Error("The ethers.js browser bundle is required before building a Merkle tree.");
@@ -16,7 +37,7 @@ export function buildMerkleArtifacts(leafHashes, options = {}) {
   const leaves = leafHashes.map((leafHash, index) =>
     normalizeBytes32(String(leafHash), `Leaf ${index + 1}`)
   );
-  const levels = buildMerkleLevels(leaves, pairing);
+  const levels = buildMerkleLevels(leaves, (left, right) => hashPair(left, right, pairing));
 
   return {
     root: levels[levels.length - 1][0],
@@ -25,6 +46,10 @@ export function buildMerkleArtifacts(leafHashes, options = {}) {
   };
 }
 
+/**
+ * Asynchronously build Merkle artifacts, yielding to the browser between
+ * chunks so the UI stays responsive for large batches.
+ */
 export async function buildMerkleArtifactsAsync(leafHashes, options = {}) {
   if (!ethers) {
     throw new Error("The ethers.js browser bundle is required before building a Merkle tree.");
@@ -70,66 +95,9 @@ export async function buildMerkleArtifactsAsync(leafHashes, options = {}) {
   };
 }
 
-export function buildMerkleProof(levels, leafIndex) {
-  if (!Number.isInteger(leafIndex) || leafIndex < 0 || leafIndex >= levels[0].length) {
-    throw new Error(`Leaf index ${leafIndex} is out of range for the current Merkle tree.`);
-  }
-
-  const proof = [];
-  let currentIndex = leafIndex;
-
-  for (let depth = 0; depth < levels.length - 1; depth += 1) {
-    const currentLevel = levels[depth];
-    const siblingIndex = currentIndex % 2 === 0 ? currentIndex + 1 : currentIndex - 1;
-    const siblingHash = currentLevel[siblingIndex] || currentLevel[currentIndex];
-
-    proof.push(siblingHash);
-    currentIndex = Math.floor(currentIndex / 2);
-  }
-
-  return proof;
-}
-
-function buildMerkleLevels(leaves, pairing) {
-  const levels = [leaves];
-
-  while (levels[levels.length - 1].length > 1) {
-    const currentLevel = levels[levels.length - 1];
-    const nextLevel = [];
-
-    for (let index = 0; index < currentLevel.length; index += 2) {
-      const left = currentLevel[index];
-      const right = currentLevel[index + 1] || left;
-      nextLevel.push(hashPair(left, right, pairing));
-    }
-
-    levels.push(nextLevel);
-  }
-
-  return levels;
-}
-
-function normalizeMerkleOptions(options) {
-  const pairing = options.pairing || "sorted";
-  const oddLeafStrategy = options.oddLeafStrategy || "duplicate-last";
-  const chunkSize = Number(options.chunkSize) || 1024;
-
-  if (pairing !== "sorted" && pairing !== "left-right") {
-    throw new Error(`Unsupported Merkle pairing mode: ${pairing}.`);
-  }
-
-  // The verifier consumes a plain sibling list, so odd leaves must duplicate themselves.
-  if (oddLeafStrategy !== "duplicate-last") {
-    throw new Error(`Unsupported odd-leaf strategy: ${oddLeafStrategy}.`);
-  }
-
-  return {
-    pairing,
-    oddLeafStrategy,
-    chunkSize: Math.max(1, chunkSize),
-    onProgress: typeof options.onProgress === "function" ? options.onProgress : null
-  };
-}
+// ---------------------------------------------------------------------------
+// Internal helpers
+// ---------------------------------------------------------------------------
 
 function hashPair(left, right, pairing) {
   const pair = pairing === "sorted"
@@ -137,14 +105,6 @@ function hashPair(left, right, pairing) {
     : [left, right];
 
   return ethers.solidityPackedKeccak256(["bytes32", "bytes32"], pair);
-}
-
-function normalizeBytes32(value, label) {
-  if (!BYTES32_PATTERN.test(value)) {
-    throw new Error(`${label} must be a 32-byte hex value.`);
-  }
-
-  return value;
 }
 
 function yieldToBrowser() {
