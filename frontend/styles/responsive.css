@@ -30,9 +30,15 @@
 
   .issuer-batch-fields,
   .issuer-leaf-fields,
-  .batch-credentials-field,
   .issuer-output-shell .qr-layout {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .batch-panel-layout,
+  .tree-panel-layout,
+  .leaf-dashboard {
+    grid-template-columns: 1fr;
+    max-height: none;
   }
 
   .issuer-view-switch {
@@ -44,18 +50,12 @@
     justify-content: center;
   }
 
-  .batch-credentials-heading,
-  .file-drop-copy {
-    grid-column: 1 / -1;
-  }
-
   .file-drop-head,
   .file-drop-actions {
     justify-content: flex-start;
   }
 
-  .qr-layout,
-  .verification-detail-grid {
+  .qr-layout {
     grid-template-columns: 1fr;
   }
 
@@ -129,8 +129,7 @@
   }
 
   .issuer-batch-fields,
-  .issuer-leaf-fields,
-  .batch-credentials-field {
+  .issuer-leaf-fields {
     grid-template-columns: 1fr;
   }
 

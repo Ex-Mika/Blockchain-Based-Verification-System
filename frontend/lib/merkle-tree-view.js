@@ -51,6 +51,10 @@ export function createMerkleTreeView({ state, elements }) {
 
     elements.merkleTreeStage.append(fragment);
     elements.merkleTreeShell.classList.remove("is-empty");
+    elements.merkleTreeShell.classList.toggle(
+      "is-compact",
+      merkleArtifacts.leaves.length <= APP_CONFIG.ui.visualMerkleLeafLimit
+    );
     scheduleLineRender();
   }
 

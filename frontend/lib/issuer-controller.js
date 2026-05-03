@@ -42,17 +42,50 @@ export function createIssuerController({
     elements.submitRoot.addEventListener("click", handleRootSubmission);
     elements.downloadQr.addEventListener("click", handleQrDownload);
     elements.proofTargetIndex.addEventListener("change", handleProofTargetIndexChange);
+    elements.proofIndexPrev.addEventListener("click", handleProofIndexPrev);
+    elements.proofIndexNext.addEventListener("click", handleProofIndexNext);
     elements.batchCredentialsFileInput.addEventListener("change", handleBatchCredentialsFileSelect);
     elements.batchCredentialsDropzone.addEventListener("dragenter", handleBatchCredentialsDragEnter);
     elements.batchCredentialsDropzone.addEventListener("dragover", handleBatchCredentialsDragOver);
     elements.batchCredentialsDropzone.addEventListener("dragleave", handleBatchCredentialsDragLeave);
     elements.batchCredentialsDropzone.addEventListener("drop", handleBatchCredentialsDrop);
+    elements.proofIndexDisplay.addEventListener("change", handleProofIndexDisplayChange);
   }
 
   function clearQrCanvas() {
     const context = elements.qrCodeCanvas.getContext("2d");
     context.fillStyle = "#fff8ef";
     context.fillRect(0, 0, elements.qrCodeCanvas.width, elements.qrCodeCanvas.height);
+  }
+
+  function handleProofIndexPrev() {
+    if (!state.merkleBuild) return;
+    const current = Number(elements.proofTargetIndex.value) || 0;
+    const next = Math.max(0, current - 1);
+    elements.proofTargetIndex.value = String(next);
+    elements.proofTargetIndex.dispatchEvent(new Event("change"));
+  }
+
+  function handleProofIndexNext() {
+    if (!state.merkleBuild) return;
+    const current = Number(elements.proofTargetIndex.value) || 0;
+    const max = state.merkleBuild.credentials.length - 1;
+    const next = Math.min(max, current + 1);
+    elements.proofTargetIndex.value = String(next);
+    elements.proofTargetIndex.dispatchEvent(new Event("change"));
+  }
+
+  function syncProofIndexDisplay(value) {
+    elements.proofIndexDisplay.value = value === "" ? "0" : value;
+  }
+
+  function handleProofIndexDisplayChange() {
+    const typed = Number(elements.proofIndexDisplay.value);
+    if (!state.merkleBuild || isNaN(typed)) return;
+    const max = state.merkleBuild.credentials.length - 1;
+    const clamped = Math.max(0, Math.min(max, Math.floor(typed)));
+    elements.proofTargetIndex.value = String(clamped);
+    elements.proofTargetIndex.dispatchEvent(new Event("change"));
   }
 
   function handleProofTargetIndexChange() {
@@ -238,6 +271,7 @@ export function createIssuerController({
     state.merkleBuild.selectedProof = selectedProof;
     hydrateCredentialForm(elements, selectedCredential);
     elements.proofTargetIndex.value = String(validatedTargetIndex);
+    syncProofIndexDisplay(String(validatedTargetIndex));
     elements.merkleRootInput.value = merkleArtifacts.root;
     elements.issuerProofInput.value = JSON.stringify(selectedProof, null, 2);
 
@@ -401,6 +435,7 @@ export function createIssuerController({
       elements.batchCredentialsDropzone.classList.add("has-loaded-file");
       elements.batchCredentialsFileName.textContent = `${file.name} / ${credentials.length.toLocaleString()} entr${credentials.length === 1 ? "y" : "ies"}`;
       elements.batchCredentialsSummary.textContent = buildBatchCredentialsSummary(file.name, credentials.length);
+      renderBatchPreviewTable(credentials, elements);
       resetStatus(elements.issuanceMessage);
       showToast(
         "success",
@@ -431,6 +466,7 @@ export function createIssuerController({
     state.merkleBuild = null;
     merkleTreeView.clear();
     elements.proofTargetIndex.value = "";
+    syncProofIndexDisplay("");
     elements.merkleRootInput.value = "";
     elements.issuerProofInput.value = "";
     resetMerkleBuildProgress();
@@ -552,6 +588,75 @@ function buildBatchCredentialsSummary(fileName, credentialCount) {
     "Source: drag and drop intake",
     "Status: ready for Merkle build"
   ].join("\n");
+}
+
+function renderBatchPreviewTable(credentials, elements) {
+  const shell = elements.batchPreviewShell;
+  const tbody = elements.batchPreviewTableBody;
+  const countBadge = elements.batchPreviewCount;
+
+  if (!shell || !tbody) {
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  const previewLimit = 50;
+  const visibleCredentials = credentials.slice(0, previewLimit);
+
+  for (let i = 0; i < visibleCredentials.length; i++) {
+    const cred = visibleCredentials[i];
+    const tr = document.createElement("tr");
+
+    const indexTd = document.createElement("td");
+    indexTd.textContent = String(i + 1);
+
+    const recipientTd = document.createElement("td");
+    const addr = cred.recipient || "";
+    recipientTd.textContent = addr.length > 14
+      ? `${addr.slice(0, 8)}…${addr.slice(-4)}`
+      : addr;
+    recipientTd.title = addr;
+
+    const credIdTd = document.createElement("td");
+    credIdTd.textContent = cred.credentialId || "";
+
+    const achieveTd = document.createElement("td");
+    achieveTd.textContent = cred.achievementCode || "";
+
+    const dateTd = document.createElement("td");
+    dateTd.textContent = cred.issueDate || "";
+
+    tr.append(indexTd, recipientTd, credIdTd, achieveTd, dateTd);
+    tbody.appendChild(tr);
+  }
+
+  if (countBadge) {
+    const suffix = credentials.length > previewLimit
+      ? ` (showing first ${previewLimit})`
+      : "";
+    countBadge.textContent = `${credentials.length.toLocaleString()} credential${credentials.length === 1 ? "" : "s"}${suffix}`;
+  }
+
+  shell.classList.remove("is-empty");
+}
+
+function clearBatchPreviewTable(elements) {
+  const shell = elements.batchPreviewShell;
+  const tbody = elements.batchPreviewTableBody;
+  const countBadge = elements.batchPreviewCount;
+
+  if (tbody) {
+    tbody.innerHTML = "";
+  }
+
+  if (countBadge) {
+    countBadge.textContent = "";
+  }
+
+  if (shell) {
+    shell.classList.add("is-empty");
+  }
 }
 
 function getMerkleTreeLevelCount(leafCount) {

@@ -22,57 +22,49 @@
     <div class="background-glow glow-one"></div>
     <div class="background-glow glow-two"></div>
 
-    <header class="hero verification-page-hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Verified Micro-Credential</p>
-        <h1>Credential details</h1>
-        <p class="hero-text">
-          This page validates the scanned QR package locally, then checks the
-          anchored root on Sepolia before showing the holder, batch, and proof
-          details below.
-        </p>
-      </div>
-    </header>
-
-    <main class="layout verification-page-layout">
-      <section class="panel" id="credential-verification">
-        <p
-          id="verification-message"
-          class="status-message status-neutral"
-          data-default-variant="neutral"
-          data-default-message="Open this page from a credential QR to verify the embedded Merkle proof and on-chain root."
-        >
-          Open this page from a credential QR to verify the embedded Merkle proof and on-chain root.
-        </p>
-
-        <div class="verification-shell">
-          <div id="verification-status-card" class="verification-status-card is-neutral">
-            <p class="panel-label">Verification Status</p>
-            <h3 id="verification-status-title">Awaiting credential scan</h3>
-            <p id="verification-status-copy" class="verification-status-copy">
-              Scan the credential QR on a phone to open this page with the holder, proof, and on-chain root details.
-            </p>
-            <div id="verification-chip-row" class="verification-chip-row"></div>
-          </div>
-
-          <div class="verification-detail-grid">
-            <article class="verification-card">
-              <p class="panel-label">Owner Details</p>
-              <dl id="verification-owner-details" class="detail-list"></dl>
-            </article>
-
-            <article class="verification-card">
-              <p class="panel-label">Batch Details</p>
-              <dl id="verification-batch-details" class="detail-list"></dl>
-            </article>
-
-            <article class="verification-card">
-              <p class="panel-label">Verification Evidence</p>
-              <dl id="verification-proof-details" class="detail-list"></dl>
-            </article>
-          </div>
+    <main class="verify-layout" id="credential-verification">
+      <!-- Status hero -->
+      <section id="verification-status-card" class="verify-status-card is-neutral">
+        <div class="verify-status-icon" id="verification-status-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="verify-status-text">
+          <p class="verify-status-eyebrow">Verification Status</p>
+          <h1 id="verification-status-title">Awaiting credential scan</h1>
+          <p id="verification-status-copy" class="verify-status-copy">
+            Scan the credential QR on a phone to open this page with the holder, proof, and on-chain root details.
+          </p>
+          <div id="verification-chip-row" class="verify-chip-row"></div>
         </div>
       </section>
+
+      <p
+        id="verification-message"
+        class="status-message status-neutral verify-banner"
+        data-default-variant="neutral"
+        data-default-message="Open this page from a credential QR to verify the embedded Merkle proof and on-chain root."
+      >
+        Open this page from a credential QR to verify the embedded Merkle proof and on-chain root.
+      </p>
+
+      <!-- Detail columns -->
+      <div class="verify-detail-columns">
+
+        <article class="verify-card">
+          <p class="panel-label">Credential</p>
+          <dl id="verification-owner-details" class="detail-list"></dl>
+        </article>
+
+        <article class="verify-card">
+          <p class="panel-label">Verification</p>
+          <dl id="verification-proof-details" class="detail-list"></dl>
+        </article>
+
+      </div>
     </main>
   </body>
 </html>

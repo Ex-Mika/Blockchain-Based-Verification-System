@@ -212,77 +212,118 @@
                 aria-labelledby="issuer-view-batch-tab"
                 data-issuer-view="batch"
               >
-                <section class="issuer-form-shell issuer-section-card issuer-batch-panel">
-                  <div class="issuer-section-head">
-                    <div>
-                      <p class="panel-label">Batch Builder</p>
-                      <h3>Batch Making</h3>
+                <section class="issuer-form-shell issuer-section-card issuer-batch-panel batch-panel-layout">
+                  <div class="batch-panel-left">
+                    <div class="issuer-section-head">
+                      <div>
+                        <p class="panel-label">Batch Builder</p>
+                        <h3>Credential Batch Issuance</h3>
+                      </div>
+                      <p class="helper-text issuer-section-copy">
+                        Configure batch metadata, load the credential export, and build the Merkle tree for anchoring.
+                      </p>
                     </div>
-                    <p class="helper-text issuer-section-copy">
-                      Load the issuer export, build the root, and stage the archive and root submission.
-                    </p>
-                  </div>
 
-                  <div class="issuer-batch-fields">
-                    <label>
-                      <span>Batch ID</span>
-                      <input id="batch-id" name="batchId" type="text" placeholder="spring-2026-cohort-a">
-                    </label>
-
-                    <label>
-                      <span>Issued At</span>
-                      <input id="issued-at" name="issuedAt" type="date">
-                    </label>
-
-                    <label>
-                      <span>Issuer Note</span>
-                      <input id="issuer-note" name="issuerNote" type="text" placeholder="Optional cohort metadata">
-                    </label>
-                  </div>
-
-                  <div class="batch-credentials-field">
-                    <p class="panel-label batch-credentials-heading">Batch Credentials JSON</p>
-
-                    <label
-                      class="file-drop-zone"
-                      id="batch-credentials-dropzone"
-                      for="batch-credentials-file"
-                    >
-                      <div class="file-drop-head">
-                        <span class="file-drop-badge">JSON Batch</span>
-                        <span class="file-drop-kicker">Issuer Intake</span>
+                    <div class="batch-step">
+                      <div class="batch-step-indicator">
+                        <span class="batch-step-number">01</span>
+                        <span class="batch-step-label">Batch Metadata</span>
                       </div>
 
-                      <p class="file-drop-title">Drop a credential export here to stage a batch for Merkle building.</p>
+                      <div class="issuer-batch-fields batch-fields-compact">
+                        <label>
+                          <span>Batch ID</span>
+                          <input id="batch-id" name="batchId" type="text" placeholder="WELDING-NCII-2026-BATCH-01">
+                        </label>
 
-                      <div class="file-drop-actions">
-                        <span class="file-drop-trigger">Choose JSON File</span>
-                        <span class="file-drop-meta" id="batch-credentials-file-name">
-                          No batch loaded
-                        </span>
+                        <label>
+                          <span>Issuance Date</span>
+                          <input id="issued-at" name="issuedAt" type="date">
+                        </label>
+
+                        <label class="batch-field-full">
+                          <span>Issuer Note</span>
+                          <input id="issuer-note" name="issuerNote" type="text" placeholder="TESDA–Iba March 2026 Cohort">
+                        </label>
                       </div>
-                    </label>
+                    </div>
 
-                    <input
-                      id="batch-credentials-file"
-                      type="file"
-                      accept=".json,application/json"
-                    >
+                    <div class="batch-actions-row">
+                      <div class="batch-step">
+                        <div class="batch-step-indicator">
+                          <span class="batch-step-number">02</span>
+                          <span class="batch-step-label">Load</span>
+                        </div>
 
-                    <pre id="batch-credentials-summary" class="batch-credentials-summary">Drop a JSON batch file to stage credentials for Merkle building.</pre>
+                        <label
+                          class="file-drop-zone file-drop-zone-compact"
+                          id="batch-credentials-dropzone"
+                          for="batch-credentials-file"
+                        >
+                          <div class="file-drop-head">
+                            <span class="file-drop-badge">JSON</span>
+                            <span class="file-drop-kicker">Credential Export</span>
+                          </div>
+                          <div class="file-drop-actions">
+                            <span class="file-drop-trigger">Choose File</span>
+                            <span class="file-drop-meta" id="batch-credentials-file-name">
+                              No batch loaded
+                            </span>
+                          </div>
+                        </label>
 
-                    <span class="helper-text file-drop-copy">
-                      Drag in a `.json` export or click the intake panel to choose a batch file.
-                    </span>
+                        <input
+                          id="batch-credentials-file"
+                          type="file"
+                          accept=".json,application/json"
+                        >
+                      </div>
+
+                      <div class="batch-step batch-step-build">
+                        <div class="batch-step-indicator">
+                          <span class="batch-step-number">03</span>
+                          <span class="batch-step-label">Build</span>
+                        </div>
+
+                        <div class="batch-build-action">
+                          <button id="build-merkle-tree" type="button">Build Merkle Tree</button>
+                          <p class="helper-text batch-build-hint">
+                            Generates root and proofs from the loaded batch.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div class="button-row issuer-form-actions">
-                    <button id="build-merkle-tree" type="button">Build Merkle Tree</button>
+                  <div class="batch-panel-right">
+                    <div class="batch-preview-shell is-empty">
+                      <div class="batch-preview-header">
+                        <span class="panel-label">Credential Preview</span>
+                        <span id="batch-preview-count" class="batch-preview-count"></span>
+                      </div>
+                      <div class="batch-preview-table-wrap">
+                        <table id="batch-credentials-table" class="batch-preview-table">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Recipient</th>
+                              <th>Credential ID</th>
+                              <th>Achievement</th>
+                              <th>Issue Date</th>
+                            </tr>
+                          </thead>
+                          <tbody id="batch-credentials-table-body">
+                          </tbody>
+                        </table>
+                      </div>
+                      <p id="batch-preview-empty" class="batch-preview-empty">
+                        Load a JSON batch file to preview credentials here.
+                      </p>
+                    </div>
                   </div>
 
-                  <p class="helper-text form-helper">
-                    After loading the batch, build the Merkle tree to populate the root and selected proof.
-                  </p>
+                  <!-- Hidden pre preserved for backwards compatibility with existing JS -->
+                  <pre id="batch-credentials-summary" class="batch-credentials-summary" hidden>Drop a JSON batch file to stage credentials for Merkle building.</pre>
                 </section>
               </section>
 
@@ -294,49 +335,55 @@
                 data-issuer-view="tree"
                 hidden
               >
-                <div class="merkle-visual-panel merkle-tree-page-panel">
-                  <div class="merkle-panel-head">
-                    <div>
-                      <p class="panel-label">Merkle Tree View</p>
-                      <h3 id="merkle-tree-title">Binary Tree Map</h3>
-                    </div>
-                    <p class="helper-text merkle-panel-copy">
-                      Root is shown at the top, leaves at the bottom. Click a leaf card to load that credential's proof into the issuer form.
-                    </p>
-                  </div>
-
-                  <label class="merkle-tree-root-field">
-                    <span>Merkle Root</span>
-                    <input
-                      id="merkle-root"
-                      name="merkleRoot"
-                      type="text"
-                      placeholder="0x0000000000000000000000000000000000000000000000000000000000000000"
-                    >
-                  </label>
-
-                  <div class="button-row issuer-form-actions merkle-tree-actions">
-                    <button id="generate-qr" type="button" class="ghost-button">Generate QR Batch</button>
-                    <button id="submit-root" type="button" class="ghost-button">Submit Root</button>
-                    <button id="download-qr" type="button" class="ghost-button" disabled>Download QR ZIP</button>
-                  </div>
-
-                  <div id="merkle-legend" class="merkle-legend" aria-hidden="true">
-                    <span class="merkle-legend-chip">Selected proof path</span>
-                    <span class="merkle-legend-chip merkle-legend-chip-muted">Other branches</span>
-                  </div>
-
-                  <div id="merkle-tree-shell" class="merkle-tree-shell is-empty">
-                    <p id="merkle-tree-empty" class="merkle-tree-empty">
-                      Build a batch to render the Merkle tree and highlight the selected credential path.
-                    </p>
-
-                    <div id="merkle-tree-canvas" class="merkle-tree-canvas">
-                      <svg id="merkle-tree-lines" class="merkle-tree-lines" aria-hidden="true"></svg>
-                      <div id="merkle-tree-stage" class="merkle-tree-stage" aria-labelledby="merkle-tree-title"></div>
+                <div class="merkle-visual-panel merkle-tree-page-panel tree-panel-layout">
+                  <div class="tree-panel-left">
+                    <div class="merkle-panel-head">
+                      <div>
+                        <p class="panel-label">Merkle Tree View</p>
+                        <h3 id="merkle-tree-title">Binary Tree Map</h3>
+                      </div>
+                      <p class="helper-text merkle-panel-copy">
+                        Root is at the top, leaves at the bottom. Click a leaf to load its proof.
+                      </p>
                     </div>
 
-                    <pre id="merkle-tree-text" class="merkle-tree-text"></pre>
+                    <label class="merkle-tree-root-field">
+                      <span>Merkle Root</span>
+                      <input
+                        id="merkle-root"
+                        name="merkleRoot"
+                        type="text"
+                        placeholder="0x0000…0000"
+                      >
+                    </label>
+
+                    <div class="tree-actions-group">
+                      <div class="button-row issuer-form-actions merkle-tree-actions">
+                        <button id="generate-qr" type="button" class="ghost-button">Generate QR Batch</button>
+                        <button id="submit-root" type="button" class="ghost-button">Submit Root</button>
+                        <button id="download-qr" type="button" class="ghost-button" disabled>Download QR ZIP</button>
+                      </div>
+
+                      <div id="merkle-legend" class="merkle-legend" aria-hidden="true">
+                        <span class="merkle-legend-chip">Selected proof path</span>
+                        <span class="merkle-legend-chip merkle-legend-chip-muted">Other branches</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tree-panel-right">
+                    <div id="merkle-tree-shell" class="merkle-tree-shell is-empty">
+                      <p id="merkle-tree-empty" class="merkle-tree-empty">
+                        Build a batch to render the Merkle tree and highlight the selected credential path.
+                      </p>
+
+                      <div id="merkle-tree-canvas" class="merkle-tree-canvas">
+                        <svg id="merkle-tree-lines" class="merkle-tree-lines" aria-hidden="true"></svg>
+                        <div id="merkle-tree-stage" class="merkle-tree-stage" aria-labelledby="merkle-tree-title"></div>
+                      </div>
+
+                      <pre id="merkle-tree-text" class="merkle-tree-text"></pre>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -349,67 +396,81 @@
                 data-issuer-view="leaf"
                 hidden
               >
-                <section class="issuer-output-shell issuer-section-card issuer-leaf-panel">
-                  <div class="issuer-section-head">
-                    <div>
+                <section class="issuer-output-shell issuer-section-card issuer-leaf-panel leaf-dashboard">
+
+                  <!-- ── Left — Credential Identity + Merkle Proof ── -->
+                  <div class="leaf-col leaf-col-identity">
+                    <div class="leaf-col-head">
                       <p class="panel-label">Leaf Details</p>
-                      <h3>Selected Credential</h3>
-                    </div>
-                    <p class="helper-text issuer-section-copy">
-                      The active leaf stays here while you build the batch and generate the QR output.
-                    </p>
-                  </div>
-
-                  <div class="issuer-leaf-fields">
-                    <label>
-                      <span>Proof Target Index</span>
-                      <input id="proof-target-index" name="proofTargetIndex" type="number" min="0" placeholder="0">
-                    </label>
-
-                    <label>
-                      <span>Recipient Address</span>
-                      <input id="recipient" name="recipient" type="text" placeholder="0x1234...">
-                    </label>
-
-                    <label>
-                      <span>Credential ID</span>
-                      <input id="credential-id" name="credentialId" type="text" placeholder="CRED-2026-001">
-                    </label>
-
-                    <label>
-                      <span>Achievement Code</span>
-                      <input id="achievement-code" name="achievementCode" type="text" placeholder="SOLIDITY-I">
-                    </label>
-
-                    <label>
-                      <span>Credential Issue Date</span>
-                      <input id="issue-date" name="issueDate" type="date">
-                    </label>
-
-                    <label class="full-width">
-                      <span>Issuer Identifier</span>
-                      <input id="issuer-id" name="issuerId" type="text" placeholder="dept-of-computer-science">
-                    </label>
-
-                    <label class="full-width">
-                      <span>Merkle Proof</span>
-                      <textarea id="issuer-proof-input" name="proofInput" rows="6"></textarea>
-                    </label>
-                  </div>
-
-                  <div class="qr-layout issuer-leaf-qr-layout">
-                    <div class="qr-shell">
-                      <canvas id="qr-code-canvas" width="320" height="320"></canvas>
-                      <p class="helper-text">
-                        This preview follows the selected credential while the ZIP archive contains one QR per batch entry.
-                      </p>
+                      <h3>Credential Identity</h3>
                     </div>
 
-                    <div class="qr-shell">
-                      <p class="panel-label">Batch QR Summary</p>
-                      <textarea id="qr-payload-output" rows="11" readonly></textarea>
+                    <div class="leaf-identity-fields">
+                      <div class="leaf-index-stepper">
+                        <span class="leaf-index-label">Proof Index</span>
+                        <div class="leaf-index-controls">
+                          <button type="button" id="proof-index-prev" class="leaf-index-btn" aria-label="Previous leaf">◀</button>
+                          <input type="number" id="proof-index-display" class="leaf-index-value" value="0" min="0" step="1">
+                          <button type="button" id="proof-index-next" class="leaf-index-btn" aria-label="Next leaf">▶</button>
+                        </div>
+                        <input id="proof-target-index" name="proofTargetIndex" type="hidden" value="0">
+                      </div>
+
+                      <div class="leaf-fields-grid">
+                        <label>
+                          <span>Credential ID</span>
+                          <input id="credential-id" name="credentialId" type="text" placeholder="CRED-2026-001" readonly>
+                        </label>
+
+                        <label>
+                          <span>Issue Date</span>
+                          <input id="issue-date" name="issueDate" type="date" readonly>
+                        </label>
+
+                        <label class="leaf-field-full">
+                          <span>Recipient</span>
+                          <input id="recipient" name="recipient" type="text" placeholder="0x1234..." readonly>
+                        </label>
+
+                        <label>
+                          <span>Achievement</span>
+                          <input id="achievement-code" name="achievementCode" type="text" placeholder="SOLIDITY-I" readonly>
+                        </label>
+
+                        <label>
+                          <span>Issuer ID</span>
+                          <input id="issuer-id" name="issuerId" type="text" placeholder="dept-of-computer-science" readonly>
+                        </label>
+                      </div>
                     </div>
+
+                    <details class="leaf-proof-details" open>
+                      <summary class="leaf-proof-summary">
+                        <span class="leaf-proof-summary-label">Merkle Proof</span>
+                        <span class="leaf-proof-summary-chevron" aria-hidden="true"></span>
+                      </summary>
+                      <textarea id="issuer-proof-input" name="proofInput" class="leaf-proof-textarea"></textarea>
+                    </details>
                   </div>
+
+                  <!-- ── Right — QR Preview + Summary ──────────── -->
+                  <div class="leaf-col leaf-col-right-stack">
+
+                    <div class="leaf-qr-preview-card">
+                      <p class="panel-label">QR Preview</p>
+                      <canvas id="qr-code-canvas" width="512" height="512"></canvas>
+                    </div>
+
+                    <div class="leaf-summary-card">
+                      <div class="leaf-summary-head">
+                        <p class="panel-label">Batch QR Summary</p>
+                        <span class="leaf-summary-badge">Payload</span>
+                      </div>
+                      <textarea id="qr-payload-output" class="leaf-summary-textarea" readonly></textarea>
+                    </div>
+
+                  </div>
+
                 </section>
               </section>
             </form>

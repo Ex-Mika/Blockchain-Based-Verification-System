@@ -36,12 +36,19 @@ export function getElements() {
     batchCredentialsFileInput: document.querySelector("#batch-credentials-file"),
     batchCredentialsFileName: document.querySelector("#batch-credentials-file-name"),
     batchCredentialsSummary: document.querySelector("#batch-credentials-summary"),
+    batchPreviewShell: document.querySelector(".batch-preview-shell"),
+    batchPreviewCount: document.querySelector("#batch-preview-count"),
+    batchPreviewTableBody: document.querySelector("#batch-credentials-table-body"),
+    batchPreviewEmpty: document.querySelector("#batch-preview-empty"),
     merkleBuildProgress: document.querySelector("#merkle-build-progress"),
     merkleBuildProgressBar: document.querySelector("#merkle-build-progress-bar"),
     merkleBuildProgressLabel: document.querySelector("#merkle-build-progress-label"),
     batchIdInput: document.querySelector("#batch-id"),
     issuedAtInput: document.querySelector("#issued-at"),
     proofTargetIndex: document.querySelector("#proof-target-index"),
+    proofIndexPrev: document.querySelector("#proof-index-prev"),
+    proofIndexNext: document.querySelector("#proof-index-next"),
+    proofIndexDisplay: document.querySelector("#proof-index-display"),
     issuerProofInput: document.querySelector("#issuer-proof-input"),
     issuerForm: document.querySelector("#issuer-form"),
     recipientInput: document.querySelector("#recipient"),
@@ -56,11 +63,11 @@ export function getVerifierElements() {
   return {
     verificationMessage: document.querySelector("#verification-message"),
     verificationStatusCard: document.querySelector("#verification-status-card"),
+    verificationStatusIcon: document.querySelector("#verification-status-icon"),
     verificationStatusTitle: document.querySelector("#verification-status-title"),
     verificationStatusCopy: document.querySelector("#verification-status-copy"),
     verificationChipRow: document.querySelector("#verification-chip-row"),
     verificationOwnerDetails: document.querySelector("#verification-owner-details"),
-    verificationBatchDetails: document.querySelector("#verification-batch-details"),
     verificationProofDetails: document.querySelector("#verification-proof-details")
   };
 }

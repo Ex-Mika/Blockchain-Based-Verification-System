@@ -32,14 +32,7 @@
   padding: 1rem;
 }
 
-#qr-code-canvas {
-  display: block;
-  width: min(100%, 320px);
-  height: auto;
-  margin: 0 auto;
-  border-radius: 18px;
-  background: #fff8ef;
-}
+/* QR canvas is styled contextually by its parent card */
 
 .helper-text {
   margin: 0.85rem 0 0;
@@ -70,6 +63,517 @@
   word-break: break-word;
 }
 
+/* ── Two-column batch panel ──────────────────────────── */
+
+.batch-panel-layout {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  max-height: calc(100vh - 14rem);
+  overflow: hidden;
+}
+
+.batch-panel-left {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  overflow: hidden;
+}
+
+.batch-panel-right {
+  display: flex;
+  min-height: 0;
+  max-height: calc(100vh - 16rem);
+  overflow: hidden;
+}
+
+.batch-step {
+  display: grid;
+  gap: 0.6rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.batch-step:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.batch-step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.batch-step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  color: #1a1310;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.batch-step-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── Compact batch fields (2-col) ────────────────────── */
+
+.batch-fields-compact {
+  grid-template-columns: 1fr 1fr;
+}
+
+.batch-field-full {
+  grid-column: 1 / -1;
+}
+
+/* ── Side-by-side actions row (Load + Build) ─────────── */
+
+.batch-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.batch-actions-row .batch-step {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* ── Credential preview table ────────────────────────── */
+
+.batch-preview-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.85rem 0.9rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 10, 16, 0.48);
+}
+
+.batch-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.batch-preview-header .panel-label {
+  margin-bottom: 0;
+}
+
+.batch-preview-count {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-strong);
+}
+
+.batch-preview-table-wrap {
+  flex: 1 1 0;
+  overflow: auto;
+  border-radius: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 158, 69, 0.45) rgba(255, 255, 255, 0.06);
+  min-height: 0;
+}
+
+.batch-preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.batch-preview-table th {
+  position: sticky;
+  top: 0;
+  padding: 0.5rem 0.6rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--muted);
+  background: rgba(8, 10, 16, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.batch-preview-table td {
+  padding: 0.45rem 0.6rem;
+  color: var(--text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  overflow-wrap: anywhere;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.batch-preview-table tbody tr:hover td {
+  background: rgba(255, 158, 69, 0.06);
+}
+
+.batch-preview-table td:first-child {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  width: 2.5rem;
+}
+
+.batch-preview-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.batch-preview-shell:not(.is-empty) .batch-preview-empty {
+  display: none;
+}
+
+.batch-preview-shell.is-empty .batch-preview-table-wrap {
+  display: none;
+}
+
+/* ── Step 3 build action ─────────────────────────────── */
+
+.batch-build-action {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.batch-build-hint {
+  margin: 0;
+  flex: 1 1 18rem;
+}
+
+/* ── Leaf dashboard — two-column layout ─────────────── */
+
+.leaf-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 0.6rem;
+}
+
+.leaf-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 0;
+}
+
+.leaf-col-head {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.leaf-col-head h3 {
+  font-size: 0.92rem;
+}
+
+/* Compact overrides for inputs inside the leaf dashboard */
+.leaf-dashboard input:not(.leaf-index-value) {
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+  border-radius: 11px;
+}
+
+.leaf-dashboard label span {
+  margin-bottom: 0.15rem;
+  font-size: 0.7rem;
+}
+
+.leaf-dashboard input[readonly] {
+  opacity: 0.7;
+  cursor: default;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* ── Col left — Credential Identity ──────────────────── */
+
+.leaf-identity-fields {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.leaf-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.leaf-field-full {
+  grid-column: 1 / -1;
+}
+
+/* ── Proof Index Stepper ─────────────────────────────── */
+
+.leaf-index-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.leaf-index-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.leaf-index-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 158, 69, 0.22);
+  background:
+    linear-gradient(180deg, rgba(255, 158, 69, 0.08), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(7, 9, 13, 0.18);
+}
+
+.leaf-index-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: rgba(255, 158, 69, 0.1);
+  color: var(--accent);
+  font-size: 0.68rem;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.leaf-index-btn:hover {
+  background: rgba(255, 158, 69, 0.28);
+  color: var(--accent-strong);
+  transform: none;
+}
+
+.leaf-index-btn:active {
+  background: rgba(255, 158, 69, 0.42);
+}
+
+.leaf-index-value {
+  width: 6rem;
+  text-align: center;
+  padding: 0 0.2rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent-strong);
+  letter-spacing: 0.06em;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.leaf-index-value::-webkit-inner-spin-button,
+.leaf-index-value::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.leaf-index-value:focus {
+  outline: none;
+  background: rgba(255, 158, 69, 0.08);
+}
+
+/* ── Col right — QR + Proof stacked ──────────────────── */
+
+.leaf-col-right-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.leaf-qr-preview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: fit-content;
+  align-self: center;
+  padding: 0.4rem 0.5rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  flex-shrink: 0;
+}
+
+.leaf-qr-preview-card .panel-label {
+  align-self: flex-start;
+}
+
+.leaf-qr-preview-card canvas {
+  display: block;
+  width: 220px;
+  height: 220px;
+  border-radius: 14px;
+  background: #fff8ef;
+}
+
+/* ── Collapsible Merkle Proof ────────────────────────── */
+
+.leaf-proof-details {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: 0;
+  padding: 0.4rem 0.55rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.leaf-proof-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.15rem 0;
+  list-style: none;
+  user-select: none;
+  transition: color 140ms ease;
+}
+
+.leaf-proof-summary::-webkit-details-marker {
+  display: none;
+}
+
+.leaf-proof-summary:hover {
+  color: var(--accent);
+}
+
+.leaf-proof-summary-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 140ms ease;
+}
+
+.leaf-proof-summary:hover .leaf-proof-summary-label {
+  color: var(--text);
+}
+
+.leaf-proof-summary-chevron {
+  width: 0.52rem;
+  height: 0.52rem;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: translateY(-0.08rem) rotate(45deg);
+  transition: transform 160ms ease;
+  flex-shrink: 0;
+}
+
+.leaf-proof-details[open] .leaf-proof-summary-chevron {
+  transform: translateY(0.08rem) rotate(225deg);
+}
+
+.leaf-proof-textarea {
+  flex: none;
+  min-height: 20rem;
+  resize: none;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  margin-top: 0.25rem;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* ── QR Summary card (inside right column) ───────────── */
+
+.leaf-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 158, 69, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 158, 69, 0.06), rgba(255, 255, 255, 0.03)),
+    rgba(8, 10, 16, 0.48);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 158, 69, 0.08),
+    0 8px 24px rgba(7, 9, 13, 0.12);
+}
+
+.leaf-summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.leaf-summary-head .panel-label {
+  margin-bottom: 0;
+  color: var(--accent);
+}
+
+.leaf-summary-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 158, 69, 0.24);
+  background: rgba(255, 158, 69, 0.12);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.leaf-summary-textarea,
+#qr-payload-output {
+  flex: none;
+  min-height: 20rem;
+  resize: none;
+  font-size: 0.78rem;
+  line-height: 1.65;
+  font-family: "IBM Plex Mono", monospace;
+}
+
 .merkle-visual-panel {
   margin-top: 1rem;
   padding: 1rem;
@@ -82,6 +586,33 @@
 
 .merkle-tree-page-panel {
   margin-top: 0;
+}
+
+/* ── Two-column tree panel ───────────────────────────── */
+
+.tree-panel-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 1rem;
+  max-height: calc(100vh - 14rem);
+  overflow: hidden;
+}
+
+.tree-panel-left {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.tree-panel-right {
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tree-actions-group {
+  display: grid;
+  gap: 0.75rem;
 }
 
 .merkle-panel-head {
@@ -101,19 +632,19 @@
 
 .merkle-tree-root-field {
   display: grid;
-  gap: 0.45rem;
-  margin-top: 1rem;
+  gap: 0.35rem;
 }
 
 .merkle-tree-actions {
-  margin-top: 1rem;
+  margin-top: 0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .merkle-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
 }
 
 .merkle-legend-chip {
@@ -152,10 +683,9 @@
 }
 
 .merkle-tree-shell {
-  margin-top: 1rem;
+  width: 100%;
   padding: 1rem;
-  min-height: 240px;
-  max-height: min(72vh, 48rem);
+  min-height: 0;
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
@@ -366,6 +896,68 @@
   letter-spacing: 0.08em;
 }
 
-#qr-payload-output {
-  min-height: 320px;
+/* ── Compact tree (≤ 5 leaves) ───────────────────────── */
+
+.merkle-tree-shell.is-compact {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.merkle-tree-shell.is-compact .merkle-tree-canvas {
+  width: 100%;
+}
+
+.merkle-tree-shell.is-compact .merkle-tree-stage {
+  gap: 0.8rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.merkle-tree-shell.is-compact .merkle-tree-level {
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.merkle-tree-shell.is-compact .merkle-node {
+  width: auto;
+  min-width: 0;
+  flex: 1 1 0;
+  max-width: 140px;
+  padding: 0.5rem 0.6rem;
+  gap: 0.15rem;
+  border-radius: 14px;
+}
+
+.merkle-tree-shell.is-compact .merkle-node.is-root {
+  width: auto;
+  max-width: 160px;
+}
+
+.merkle-tree-shell.is-compact .merkle-node-kicker {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+.merkle-tree-shell.is-compact .merkle-node-title {
+  font-size: 0.78rem;
+}
+
+.merkle-tree-shell.is-compact .merkle-node-meta {
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.merkle-tree-shell.is-compact .merkle-node-hash {
+  font-size: 0.64rem;
+  line-height: 1.35;
+}
+
+.merkle-tree-shell.is-compact .merkle-node-badge {
+  top: 0.4rem;
+  right: 0.4rem;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.56rem;
 }

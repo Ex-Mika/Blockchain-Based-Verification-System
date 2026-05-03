@@ -55,26 +55,21 @@ export function createVerifierController({ elements }) {
     setVerificationStatusCard({
       variant: "neutral",
       title: "Awaiting credential scan",
-      copy: "Scan the credential QR on a phone to open this page with the holder, proof, and on-chain root details.",
-      chips: [
-        "Phone scan flow",
-        APP_CONFIG.network.name
-      ]
+      copy: "Scan a credential QR code to verify its Merkle proof and on-chain root.",
+      chips: [APP_CONFIG.network.name],
+      icon: "waiting"
     });
     renderDetailList(elements.verificationOwnerDetails, [
-      ["Recipient Address", "No scanned credential loaded yet."],
-      ["Credential ID", "No scanned credential loaded yet."],
-      ["Achievement Code", "No scanned credential loaded yet."]
-    ]);
-    renderDetailList(elements.verificationBatchDetails, [
-      ["Batch ID", "No verification link opened yet."],
-      ["Payload Network", "No verification link opened yet."],
-      ["Merkle Root", "No verification link opened yet."]
+      ["Recipient", "N/A"],
+      ["Credential ID", "N/A"],
+      ["Achievement", "N/A"],
+      ["Issue Date", "N/A"]
     ]);
     renderDetailList(elements.verificationProofDetails, [
-      ["Verification Result", "Waiting for a scanned QR link."],
-      ["Proof Items", "0"],
-      ["Computed Root", "No verification link opened yet."]
+      ["Result", "Waiting for scan"],
+      ["Batch ID", "N/A"],
+      ["Network", "N/A"],
+      ["Merkle Root", "N/A"]
     ]);
   }
 
@@ -82,25 +77,20 @@ export function createVerifierController({ elements }) {
     setStatus(
       elements.verificationMessage,
       "warning",
-      `Checking the QR proof and ${APP_CONFIG.network.name} root...`
+      `Checking proof and ${APP_CONFIG.network.name} root...`
     );
     setVerificationStatusCard({
-      variant: "neutral",
-      title: "Verifying credential",
-      copy: `The QR payload is being checked locally, then the configured ${APP_CONFIG.network.name} contract is queried for the anchored root.`,
-      chips: [
-        "Checking proof",
-        "Checking chain"
-      ]
+      variant: "warning",
+      title: "Verifying credential...",
+      copy: `Checking the QR payload locally and querying the ${APP_CONFIG.network.name} contract.`,
+      chips: ["Checking proof", "Checking chain"],
+      icon: "loading"
     });
     renderDetailList(elements.verificationOwnerDetails, [
-      ["Recipient Address", "Loading credential details..."]
-    ]);
-    renderDetailList(elements.verificationBatchDetails, [
-      ["Batch ID", "Loading batch details..."]
+      ["Recipient", "Loading..."]
     ]);
     renderDetailList(elements.verificationProofDetails, [
-      ["Verification Result", "Checking proof and on-chain root..."]
+      ["Result", "Checking..."]
     ]);
   }
 
@@ -108,24 +98,20 @@ export function createVerifierController({ elements }) {
     setStatus(
       elements.verificationMessage,
       "error",
-      "The ethers.js browser bundle did not load, so the verification view cannot validate scanned credentials."
+      "The ethers.js runtime did not load. Verification is unavailable."
     );
     setVerificationStatusCard({
       variant: "error",
       title: "Verification unavailable",
-      copy: "This browser session cannot validate the QR payload because the hashing runtime did not load.",
-      chips: [
-        "Runtime missing"
-      ]
+      copy: "The hashing runtime failed to load. Reload the page or try a different browser.",
+      chips: ["Runtime missing"],
+      icon: "error"
     });
     renderDetailList(elements.verificationOwnerDetails, [
-      ["Recipient Address", "Unavailable while the verification runtime is missing."]
-    ]);
-    renderDetailList(elements.verificationBatchDetails, [
-      ["Batch ID", "Unavailable while the verification runtime is missing."]
+      ["Status", "Runtime unavailable"]
     ]);
     renderDetailList(elements.verificationProofDetails, [
-      ["Verification Result", "Unavailable while the verification runtime is missing."]
+      ["Status", "Runtime unavailable"]
     ]);
   }
 
@@ -138,15 +124,12 @@ export function createVerifierController({ elements }) {
       variant: statusVariant,
       title: buildVerificationTitle(verificationResult),
       copy: buildVerificationCopy(verificationResult),
-      chips: buildVerificationChips(verificationResult)
+      chips: buildVerificationChips(verificationResult),
+      icon: verificationResult.valid ? "success" : "error"
     });
     renderDetailList(
       elements.verificationOwnerDetails,
       buildOwnerDetailEntries(verificationResult.credential)
-    );
-    renderDetailList(
-      elements.verificationBatchDetails,
-      buildBatchDetailEntries(verificationResult)
     );
     renderDetailList(
       elements.verificationProofDetails,
@@ -159,27 +142,62 @@ export function createVerifierController({ elements }) {
     setVerificationStatusCard({
       variant: "error",
       title: "Credential link could not be read",
-      copy: "The page opened with a verification payload, but the data could not be decoded or validated.",
-      chips: [
-        "Invalid payload"
-      ]
+      copy: "The QR data could not be decoded. The link may be corrupted or incomplete.",
+      chips: ["Invalid payload"],
+      icon: "error"
     });
     renderDetailList(elements.verificationOwnerDetails, [
-      ["Owner Details", "The payload could not be decoded."]
-    ]);
-    renderDetailList(elements.verificationBatchDetails, [
-      ["Batch Details", "The payload could not be decoded."]
+      ["Status", "Payload could not be decoded"]
     ]);
     renderDetailList(elements.verificationProofDetails, [
-      ["Verification Result", "The payload could not be decoded."]
+      ["Status", "Payload could not be decoded"]
     ]);
   }
 
-  function setVerificationStatusCard({ variant, title, copy, chips }) {
-    elements.verificationStatusCard.className = `verification-status-card is-${variant}`;
+  function setVerificationStatusCard({ variant, title, copy, chips, icon }) {
+    elements.verificationStatusCard.className = `verify-status-card is-${variant}`;
     elements.verificationStatusTitle.textContent = title;
     elements.verificationStatusCopy.textContent = copy;
+    setStatusIcon(icon);
     renderChips(chips);
+  }
+
+  function setStatusIcon(type) {
+    const iconEl = elements.verificationStatusIcon;
+    if (!iconEl) return;
+
+    const icons = {
+      success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>`,
+      error: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>`,
+      warning: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>`,
+      waiting: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>`,
+      loading: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="2" x2="12" y2="6"/>
+        <line x1="12" y1="18" x2="12" y2="22"/>
+        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+        <line x1="2" y1="12" x2="6" y2="12"/>
+        <line x1="18" y1="12" x2="22" y2="12"/>
+        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+      </svg>`
+    };
+
+    iconEl.innerHTML = icons[type] || icons.waiting;
   }
 
   function renderChips(chips) {
@@ -282,41 +300,41 @@ function buildVerificationTitle(verificationResult) {
 
 function buildVerificationCopy(verificationResult) {
   if (!verificationResult.localProofValid) {
-    return "The holder details were read from the QR link, but the credential data and proof did not resolve to the embedded Merkle root.";
+    return "The credential data and proof did not resolve to the embedded Merkle root.";
   }
 
   if (!verificationResult.networkMatchesApp) {
-    return `The credential is internally valid, but the payload declares chain ${verificationResult.payloadChainId || "unknown"} instead of ${APP_CONFIG.network.name}. Because the on-chain target does not match this verifier, the credential is treated as invalid.`;
+    return `The credential targets chain ${verificationResult.payloadChainId || "unknown"} instead of ${APP_CONFIG.network.name}. The credential is treated as invalid.`;
   }
 
   if (!verificationResult.contractMatchesApp) {
-    return "The credential data and proof are internally consistent, but the QR payload contract address does not match the configured verifier contract. Because the expected on-chain contract cannot be confirmed, the credential is treated as invalid.";
+    return "The QR payload contract address does not match the configured verifier contract.";
   }
 
   if (verificationResult.onChainError) {
-    return `The credential data and proof are internally consistent, but the verifier could not read the configured ${APP_CONFIG.network.name} contract. If the root cannot be verified on-chain, the credential is treated as invalid.`;
+    return `Could not read the ${APP_CONFIG.network.name} contract. The root cannot be verified on-chain.`;
   }
 
   if (verificationResult.onChainRootAnchored === false) {
-    return "The credential data and proof resolve to the embedded Merkle root, but that root is not present in the configured on-chain registry.";
+    return "The proof resolves to the embedded root, but that root is not present in the on-chain registry.";
   }
 
   if (verificationResult.onChainRootActive === false) {
-    return "The credential data and proof resolve to an anchored root, but that root is no longer active on-chain. Treat the credential as revoked.";
+    return "The root is anchored but no longer active on-chain. Treat the credential as revoked.";
   }
 
   if (verificationResult.onChainBatchMatches === false) {
-    return "The credential data and proof resolve to the embedded Merkle root, but the batch ID in the QR payload maps to a different on-chain root.";
+    return "The batch ID in the QR payload maps to a different on-chain root.";
   }
 
-  return "The credential data recomputed to the expected leaf, resolved to the embedded Merkle root, and matched an active on-chain root in the configured verifier contract.";
+  return "The credential data recomputed to the expected leaf, resolved to the embedded Merkle root, and matched an active on-chain root.";
 }
 
 function buildVerificationChips(verificationResult) {
   return [
     verificationResult.localProofValid ? "Proof valid" : "Proof invalid",
     buildOnChainChip(verificationResult),
-    verificationResult.batchId ? `Batch ${verificationResult.batchId}` : "No batch ID",
+    verificationResult.batchId ? `Batch ${verificationResult.batchId}` : null,
     !verificationResult.contractMatchesApp
       ? "Contract mismatch"
       : verificationResult.networkMatchesApp
@@ -351,54 +369,42 @@ function buildOwnerDetailEntries(credential) {
 
   return detailEntries.length
     ? detailEntries
-    : [["Owner Details", "No credential fields were embedded in the payload."]];
-}
-
-function buildBatchDetailEntries(verificationResult) {
-  const metadata = verificationResult.metadata || {};
-  const payloadNetwork = verificationResult.networkName
-    ? `${verificationResult.networkName} (${verificationResult.payloadChainId || "unknown"})`
-    : (verificationResult.payloadChainId || "Not provided");
-
-  return [
-    ["Batch ID", verificationResult.batchId || "Not provided"],
-    ["Payload Network", payloadNetwork],
-    ["Payload Contract", verificationResult.contractAddress || "Not provided"],
-    ["Verified Contract", verificationResult.verificationContractAddress || APP_CONFIG.contract.address || "Not configured"],
-    ["Merkle Root", verificationResult.expectedRoot],
-    ["On-Chain Issuer", verificationResult.onChainIssuer || "Not available"],
-    ["On-Chain Anchored At", verificationResult.onChainAnchoredAt || "Not available"],
-    ["On-Chain Revoked At", formatRevokedAt(verificationResult)],
-    ["Issued At", metadata.issuedAt || "Not provided"],
-    ["Issuer Note", metadata.issuerNote || "Not provided"],
-    ["QR Generated At", metadata.generatedAt || "Not provided"]
-  ];
+    : [["Status", "No credential fields were embedded in the payload."]];
 }
 
 function buildProofDetailEntries(verificationResult) {
-  return [
-    ["Verification Result", formatVerificationResult(verificationResult)],
-    ["Local Proof Match", verificationResult.localProofValid ? "Yes" : "No"],
-    ["Root Match", verificationResult.rootMatches ? "Yes" : "No"],
-    ["Embedded Leaf Match", formatLeafMatch(verificationResult.embeddedLeafMatches)],
-    ["App Network Match", verificationResult.networkMatchesApp ? "Yes" : "No"],
-    ["Configured Contract Match", verificationResult.contractMatchesApp ? "Yes" : "No"],
-    ["On-Chain Check", formatOnChainCheck(verificationResult)],
-    ["On-Chain Root Anchored", formatYesNoUnknown(verificationResult.onChainRootAnchored)],
-    ["On-Chain Root Active", formatYesNoUnknown(verificationResult.onChainRootActive)],
-    ["On-Chain Batch Match", formatYesNoUnknown(verificationResult.onChainBatchMatches)],
+  const entries = [
+    ["Result", verificationResult.valid ? "Valid" : "Invalid"],
+    ["Batch ID", verificationResult.batchId || "Not provided"],
+    ["Network", verificationResult.networkName
+      ? `${verificationResult.networkName} (${verificationResult.payloadChainId || "N/A"})`
+      : (verificationResult.payloadChainId || "Not provided")],
+    ["On-Chain Root", formatOnChainRootStatus(verificationResult)],
     ["Proof Items", String(verificationResult.proofLength)],
     ["Leaf Hash", verificationResult.leafHash],
-    ["Computed Root", verificationResult.computedRoot]
+    ["Merkle Root", verificationResult.expectedRoot]
   ];
+
+  return entries;
 }
 
-function formatLeafMatch(embeddedLeafMatches) {
-  if (embeddedLeafMatches === null) {
-    return "No embedded leaf hash";
+function formatOnChainRootStatus(verificationResult) {
+  if (verificationResult.onChainError) {
+    return "Check failed";
   }
-
-  return embeddedLeafMatches ? "Yes" : "No";
+  if (verificationResult.onChainRootAnchored === false) {
+    return "Not anchored";
+  }
+  if (verificationResult.onChainRootActive === false) {
+    return "Revoked";
+  }
+  if (verificationResult.onChainRootActive === true && verificationResult.onChainBatchMatches !== false) {
+    return "Active";
+  }
+  if (verificationResult.onChainBatchMatches === false) {
+    return "Batch mismatch";
+  }
+  return "Pending";
 }
 
 function buildOnChainChip(verificationResult) {
@@ -423,46 +429,6 @@ function buildOnChainChip(verificationResult) {
   }
 
   return "Chain status pending";
-}
-
-function formatOnChainCheck(verificationResult) {
-  if (verificationResult.onChainError) {
-    return verificationResult.onChainError;
-  }
-
-  if (!verificationResult.onChainCheckPerformed) {
-    return "Not performed";
-  }
-
-  return verificationResult.onChainRpcUrl || "Completed";
-}
-
-function formatYesNoUnknown(value) {
-  if (value === null) {
-    return "Not checked";
-  }
-
-  return value ? "Yes" : "No";
-}
-
-function formatRevokedAt(verificationResult) {
-  if (verificationResult.onChainRevokedAt) {
-    return verificationResult.onChainRevokedAt;
-  }
-
-  if (verificationResult.onChainRootAnchored === true && verificationResult.onChainRootActive === true) {
-    return "Not revoked";
-  }
-
-  return "Not available";
-}
-
-function formatVerificationResult(verificationResult) {
-  if (verificationResult.valid) {
-    return "Valid";
-  }
-
-  return "Invalid";
 }
 
 function formatDetailLabel(rawKey) {

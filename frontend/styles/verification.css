@@ -1,105 +1,331 @@
-.verification-status-card {
+/* Verification page layout */
+
+.verify-layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: min(68rem, calc(100% - 2rem));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 4vw, 3rem) 0;
+  justify-content: center;
+}
+
+/* Status hero */
+
+.verify-status-card {
+  --status-color: var(--accent);
+  --status-fill: rgba(240, 106, 74, 0.13);
+  --status-border: rgba(240, 106, 74, 0.3);
+  --status-shadow: rgba(240, 106, 74, 0.14);
+
+  position: relative;
   display: grid;
-  gap: 0.8rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 1.55rem);
+  align-items: start;
+  padding: clamp(1.3rem, 4vw, 2rem);
+  overflow: hidden;
+  color: var(--text);
+  border: 1px solid var(--status-border);
+  border-radius: 28px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
-    rgba(7, 9, 13, 0.36);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),
+    rgba(15, 18, 28, 0.92);
+  box-shadow:
+    0 28px 62px rgba(18, 20, 29, 0.26),
+    0 0 42px var(--status-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
-.verification-status-card.is-success {
-  border-color: rgba(106, 211, 149, 0.28);
-  box-shadow: 0 18px 34px rgba(106, 211, 149, 0.1);
+.verify-status-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.48rem;
+  background: linear-gradient(180deg, var(--accent-strong), var(--status-color));
 }
 
-.verification-status-card.is-warning {
-  border-color: rgba(255, 207, 97, 0.28);
-  box-shadow: 0 18px 34px rgba(255, 171, 73, 0.1);
+.verify-status-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, var(--status-shadow), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.06), transparent 30%);
+  pointer-events: none;
 }
 
-.verification-status-card.is-error {
-  border-color: rgba(255, 127, 117, 0.3);
-  box-shadow: 0 18px 34px rgba(255, 111, 104, 0.11);
+.verify-status-card > * {
+  position: relative;
+  z-index: 1;
 }
 
-.verification-status-card.is-neutral {
-  border-color: rgba(217, 201, 173, 0.18);
+.verify-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.65rem;
+  height: 3.65rem;
+  border: 1px solid var(--status-border);
+  border-radius: 999px;
+  background: var(--status-fill);
+  color: var(--status-color);
+  box-shadow:
+    inset 0 0 0 0.32rem rgba(255, 255, 255, 0.045),
+    0 14px 28px rgba(7, 9, 13, 0.18);
 }
 
-#credential-verification {
-  scroll-margin-top: 1.5rem;
+.verify-status-icon svg {
+  width: 1.85rem;
+  height: 1.85rem;
 }
 
-.verification-status-card h3 {
+.verify-status-text {
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.verify-status-eyebrow {
   margin: 0;
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--status-color);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.verification-status-copy {
+.verify-status-card h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.8rem, 3.8vw, 2.7rem);
+  line-height: 1.08;
+}
+
+.verify-status-copy {
+  max-width: 64ch;
   margin: 0;
   color: var(--muted);
-  line-height: 1.7;
-  max-width: 68ch;
+  font-size: 1rem;
+  line-height: 1.65;
 }
 
-.verification-chip-row {
+.verify-chip-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.55rem;
+  margin-top: 0.3rem;
 }
 
 .verification-chip {
   display: inline-flex;
   align-items: center;
-  padding: 0.45rem 0.75rem;
+  min-height: 1.9rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
   color: var(--text);
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
+  line-height: 1.15;
   text-transform: uppercase;
 }
 
-.verification-detail-grid {
+.verify-status-card.is-success {
+  --status-color: var(--success);
+  --status-fill: rgba(106, 211, 149, 0.14);
+  --status-border: rgba(106, 211, 149, 0.32);
+  --status-shadow: rgba(106, 211, 149, 0.13);
+}
+
+.verify-status-card.is-warning {
+  --status-color: var(--warning);
+  --status-fill: rgba(255, 207, 97, 0.15);
+  --status-border: rgba(255, 207, 97, 0.3);
+  --status-shadow: rgba(255, 171, 73, 0.13);
+}
+
+.verify-status-card.is-error {
+  --status-color: var(--danger);
+  --status-fill: rgba(255, 127, 117, 0.14);
+  --status-border: rgba(255, 127, 117, 0.32);
+  --status-shadow: rgba(255, 111, 104, 0.13);
+}
+
+.verify-status-card.is-warning .verify-status-icon svg {
+  animation: verify-spin 1.35s linear infinite;
+}
+
+/* Status message */
+
+#verification-message {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid rgba(217, 201, 173, 0.18);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+    rgba(15, 18, 28, 0.82);
+  color: var(--muted);
+  box-shadow: 0 18px 34px rgba(18, 20, 29, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+#verification-message.status-success {
+  border-color: rgba(106, 211, 149, 0.26);
+  background:
+    linear-gradient(180deg, rgba(106, 211, 149, 0.12), rgba(106, 211, 149, 0.05)),
+    rgba(15, 18, 28, 0.84);
+  color: var(--success);
+}
+
+#verification-message.status-warning {
+  border-color: rgba(255, 207, 97, 0.26);
+  background:
+    linear-gradient(180deg, rgba(255, 207, 97, 0.12), rgba(255, 207, 97, 0.05)),
+    rgba(15, 18, 28, 0.84);
+  color: var(--warning);
+}
+
+#verification-message.status-error {
+  border-color: rgba(255, 127, 117, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 127, 117, 0.12), rgba(255, 127, 117, 0.05)),
+    rgba(15, 18, 28, 0.84);
+  color: var(--danger);
+}
+
+/* Detail cards */
+
+.verify-detail-columns {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.verification-card {
-  min-height: 100%;
+.verify-card {
+  min-width: 0;
+  padding: 1.2rem;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+    rgba(7, 9, 13, 0.48);
+  box-shadow: 0 18px 36px rgba(18, 20, 29, 0.2);
+  backdrop-filter: blur(14px);
 }
 
-.detail-list {
+.verify-card .panel-label {
+  margin-bottom: 0.9rem;
+  color: var(--accent);
+  font-size: 0.72rem;
+}
+
+.verification-page .detail-list {
   display: grid;
-  gap: 0.8rem;
+  gap: 0;
   margin: 0;
 }
 
-.detail-row {
+.verification-page .detail-row {
   display: grid;
-  gap: 0.28rem;
-  padding-top: 0.8rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 0.32rem;
+  padding: 0.86rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.detail-row:first-child {
+.verification-page .detail-row:first-child {
   padding-top: 0;
   border-top: 0;
 }
 
-.detail-row dt {
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
+.verification-page .detail-row:last-child {
+  padding-bottom: 0;
 }
 
-.detail-row dd {
+.verification-page .detail-row dt {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.verification-page .detail-row dd {
   margin: 0;
   color: var(--text);
-  line-height: 1.65;
+  font-size: 0.95rem;
+  line-height: 1.55;
   overflow-wrap: anywhere;
+}
+
+@keyframes verify-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .verify-status-card.is-warning .verify-status-icon svg {
+    animation: none;
+  }
+}
+
+@media (max-width: 56rem) {
+  .verify-layout {
+    justify-content: flex-start;
+  }
+
+  .verify-detail-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 38rem) {
+  .verify-layout {
+    width: min(100% - 1rem, 100%);
+    padding-block: 0.5rem 1rem;
+  }
+
+  .verify-status-card {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+    border-radius: 22px;
+  }
+
+  .verify-status-card::before {
+    inset: 0 0 auto;
+    width: auto;
+    height: 0.36rem;
+  }
+
+  .verify-status-icon {
+    width: 3.05rem;
+    height: 3.05rem;
+  }
+
+  .verify-status-card h1 {
+    font-size: 1.65rem;
+  }
+
+  .verify-status-copy,
+  .verification-page .detail-row dd {
+    font-size: 0.92rem;
+  }
+
+  #verification-message,
+  .verify-card {
+    border-radius: 20px;
+  }
 }
