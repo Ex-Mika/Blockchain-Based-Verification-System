@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credential Verification</title>
+    <meta
+      name="description"
+      content="Dedicated phone-friendly page for verifying a scanned Sepolia micro-credential."
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js"></script>
+    <script type="module" src="./verify.js"></script>
+  </head>
+  <body class="verification-page">
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <header class="hero verification-page-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Verified Micro-Credential</p>
+        <h1>Credential details</h1>
+        <p class="hero-text">
+          This page validates the scanned QR package locally, then checks the
+          anchored root on Sepolia before showing the holder, batch, and proof
+          details below.
+        </p>
+      </div>
+    </header>
+
+    <main class="layout verification-page-layout">
+      <section class="panel" id="credential-verification">
+        <p
+          id="verification-message"
+          class="status-message status-neutral"
+          data-default-variant="neutral"
+          data-default-message="Open this page from a credential QR to verify the embedded Merkle proof and on-chain root."
+        >
+          Open this page from a credential QR to verify the embedded Merkle proof and on-chain root.
+        </p>
+
+        <div class="verification-shell">
+          <div id="verification-status-card" class="verification-status-card is-neutral">
+            <p class="panel-label">Verification Status</p>
+            <h3 id="verification-status-title">Awaiting credential scan</h3>
+            <p id="verification-status-copy" class="verification-status-copy">
+              Scan the credential QR on a phone to open this page with the holder, proof, and on-chain root details.
+            </p>
+            <div id="verification-chip-row" class="verification-chip-row"></div>
+          </div>
+
+          <div class="verification-detail-grid">
+            <article class="verification-card">
+              <p class="panel-label">Owner Details</p>
+              <dl id="verification-owner-details" class="detail-list"></dl>
+            </article>
+
+            <article class="verification-card">
+              <p class="panel-label">Batch Details</p>
+              <dl id="verification-batch-details" class="detail-list"></dl>
+            </article>
+
+            <article class="verification-card">
+              <p class="panel-label">Verification Evidence</p>
+              <dl id="verification-proof-details" class="detail-list"></dl>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+@media (max-width: 1260px) {
+  .issuer-dashboard-layout {
+    width: min(calc(100% - 1.5rem), 100%);
+  }
+
+  .connection-console {
+    inset-inline-start: 0.75rem;
+    inset-block-start: 0.75rem;
+  }
+
+  .issuer-action-row {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 2rem;
+  }
+
+  .hero-copy h1 {
+    max-width: none;
+  }
+
+  .status-grid,
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .issuer-batch-fields,
+  .issuer-leaf-fields,
+  .batch-credentials-field,
+  .issuer-output-shell .qr-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .issuer-view-switch {
+    width: 100%;
+  }
+
+  .issuer-view-button {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .batch-credentials-heading,
+  .file-drop-copy {
+    grid-column: 1 / -1;
+  }
+
+  .file-drop-head,
+  .file-drop-actions {
+    justify-content: flex-start;
+  }
+
+  .qr-layout,
+  .verification-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .issuer-page .toast-stack {
+    top: auto;
+    right: 0.75rem;
+    bottom: 5.5rem;
+    width: min(calc(100vw - 1.5rem), 28rem);
+  }
+
+  .merkle-node {
+    width: 156px;
+  }
+
+  .merkle-node.is-root {
+    width: 184px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero,
+  .layout {
+    width: min(100% - 1rem, 100%);
+  }
+
+  .issuer-dashboard-layout {
+    width: min(calc(100% - 1rem), 100%);
+  }
+
+  .connection-console {
+    left: 0.5rem;
+    right: 0.5rem;
+    top: 0.5rem;
+    bottom: auto;
+    inset-inline-start: 0.5rem;
+    inset-block-start: 0.5rem;
+  }
+
+  .connection-console,
+  .connection-console.is-minimized {
+    width: auto;
+  }
+
+  .connection-console {
+    padding: 0.9rem 0.95rem 1rem;
+  }
+
+  .connection-console.is-minimized {
+    padding: 0.8rem 0.9rem;
+    left: 0.5rem;
+    right: auto;
+    top: 0.5rem;
+  }
+
+  .connection-console.is-minimized .wallet-widget-heading {
+    gap: 0.5rem;
+  }
+
+  .panel,
+  .hero-panel {
+    border-radius: 22px;
+  }
+
+  .panel-head {
+    flex-direction: column;
+  }
+
+  .status-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .issuer-batch-fields,
+  .issuer-leaf-fields,
+  .batch-credentials-field {
+    grid-template-columns: 1fr;
+  }
+
+  .issuer-build-progress-top {
+    padding: 0.85rem 0.9rem 0.9rem;
+  }
+
+  .issuer-build-progress-top .issuer-build-progress-label {
+    font-size: 0.82rem;
+  }
+
+  .form-span-2 {
+    grid-column: auto;
+  }
+
+  .merkle-tree-shell {
+    padding: 0.85rem;
+  }
+
+  .merkle-node {
+    width: 146px;
+  }
+
+  .merkle-node.is-root {
+    width: 172px;
+  }
+}

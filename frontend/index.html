@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepolia Credential Console</title>
+    <meta
+      name="description"
+      content="Frontend-first issuer console for Sepolia micro-credential anchoring and QR generation."
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.15.0/dist/ethers.umd.min.js"></script>
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body class="issuer-page">
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <main class="layout issuer-page-layout issuer-dashboard-layout">
+      <aside class="workspace-sidebar">
+        <section class="panel connection-console" id="wallet-widget">
+          <div class="wallet-widget-bar" id="wallet-widget-handle">
+            <div class="wallet-widget-heading">
+              <p class="eyebrow">Wallet</p>
+              <div class="wallet-widget-status-row">
+                <h2>Wallet</h2>
+                <strong
+                  id="wallet-status"
+                  class="connection-state"
+                  data-state="disconnected"
+                >
+                  <span class="connection-state-prefix">Wallet</span>
+                  <span id="wallet-status-label">Not connected</span>
+                  <span class="connection-state-expand" aria-hidden="true">+</span>
+                </strong>
+              </div>
+            </div>
+            <button
+              id="toggle-wallet-widget"
+              type="button"
+              class="ghost-button wallet-widget-toggle"
+              aria-expanded="true"
+              aria-controls="wallet-widget-body"
+              aria-label="Minimize wallet console"
+            >
+              <span class="wallet-widget-toggle-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div id="wallet-widget-body" class="wallet-widget-body">
+            <div class="button-row connection-actions">
+              <button id="connect-wallet" type="button">Connect</button>
+              <button id="refresh-network" type="button" class="ghost-button">Refresh</button>
+            </div>
+
+            <details class="connection-details">
+              <summary>
+                <span class="details-toggle-label">Details</span>
+                <span class="details-toggle-chevron" aria-hidden="true"></span>
+              </summary>
+              <dl class="connection-meta-list">
+                <div class="connection-meta-item">
+                  <dt>Network</dt>
+                  <dd id="network-value">Unknown</dd>
+                </div>
+                <div class="connection-meta-item">
+                  <dt>Account</dt>
+                  <dd class="connection-meta-value-row">
+                    <span id="account-value">No account</span>
+                    <button
+                      id="copy-account"
+                      type="button"
+                      class="ghost-button wallet-copy-button"
+                      aria-label="Copy wallet account"
+                      disabled
+                    >
+                      Copy
+                    </button>
+                  </dd>
+                </div>
+                <div class="connection-meta-item">
+                  <dt>Contract</dt>
+                  <dd class="connection-meta-value-row">
+                    <span id="contract-address">Not configured</span>
+                    <button
+                      id="copy-contract"
+                      type="button"
+                      class="ghost-button wallet-copy-button"
+                      aria-label="Copy contract address"
+                      disabled
+                    >
+                      Copy
+                    </button>
+                  </dd>
+                </div>
+              </dl>
+            </details>
+
+            <p
+              id="connection-message"
+              class="status-message status-neutral"
+              data-default-variant="neutral"
+              data-default-message="Connect wallet to submit roots."
+            >
+              Connect wallet to submit roots.
+            </p>
+          </div>
+        </section>
+      </aside>
+
+      <section class="workspace-main">
+        <section class="panel issuer-workbench">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Issuer</p>
+              <h2>Batch Root And Verification QRs</h2>
+            </div>
+          </div>
+
+          <div
+            id="merkle-build-progress"
+            class="issuer-build-progress issuer-build-progress-top"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            aria-describedby="merkle-build-progress-label"
+            hidden
+          >
+            <div class="issuer-build-progress-track" aria-hidden="true">
+              <span id="merkle-build-progress-bar" class="issuer-build-progress-bar"></span>
+            </div>
+            <p id="merkle-build-progress-label" class="issuer-build-progress-label">
+              Preparing batch credentials... 0%
+            </p>
+          </div>
+
+          <div
+            id="qr-generation-progress"
+            class="issuer-build-progress issuer-build-progress-top"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            aria-describedby="qr-generation-progress-label"
+            hidden
+          >
+            <div class="issuer-build-progress-track" aria-hidden="true">
+              <span id="qr-generation-progress-bar" class="issuer-build-progress-bar"></span>
+            </div>
+            <p id="qr-generation-progress-label" class="issuer-build-progress-label">
+              Preparing QR archive... 0%
+            </p>
+          </div>
+
+          <p
+            id="issuance-message"
+            class="status-message status-neutral"
+            data-default-variant="neutral"
+            data-default-message=""
+            hidden
+          ></p>
+
+          <div class="issuer-view-switch" role="tablist" aria-label="Issuer workspace pages">
+            <button
+              type="button"
+              class="issuer-view-button is-active"
+              id="issuer-view-batch-tab"
+              role="tab"
+              aria-selected="true"
+              aria-controls="issuer-view-batch"
+              data-issuer-view-button="batch"
+            >
+              Batch
+            </button>
+            <button
+              type="button"
+              class="issuer-view-button"
+              id="issuer-view-tree-tab"
+              role="tab"
+              aria-selected="false"
+              aria-controls="issuer-view-tree"
+              data-issuer-view-button="tree"
+            >
+              Binary Tree
+            </button>
+            <button
+              type="button"
+              class="issuer-view-button"
+              id="issuer-view-leaf-tab"
+              role="tab"
+              aria-selected="false"
+              aria-controls="issuer-view-leaf"
+              data-issuer-view-button="leaf"
+            >
+              Leaf
+            </button>
+          </div>
+
+          <div class="issuer-workbench-pages">
+            <form id="issuer-form" class="issuer-workspace-form">
+              <section
+                class="issuer-workbench-page is-active"
+                id="issuer-view-batch"
+                role="tabpanel"
+                aria-labelledby="issuer-view-batch-tab"
+                data-issuer-view="batch"
+              >
+                <section class="issuer-form-shell issuer-section-card issuer-batch-panel">
+                  <div class="issuer-section-head">
+                    <div>
+                      <p class="panel-label">Batch Builder</p>
+                      <h3>Batch Making</h3>
+                    </div>
+                    <p class="helper-text issuer-section-copy">
+                      Load the issuer export, build the root, and stage the archive and root submission.
+                    </p>
+                  </div>
+
+                  <div class="issuer-batch-fields">
+                    <label>
+                      <span>Batch ID</span>
+                      <input id="batch-id" name="batchId" type="text" placeholder="spring-2026-cohort-a">
+                    </label>
+
+                    <label>
+                      <span>Issued At</span>
+                      <input id="issued-at" name="issuedAt" type="date">
+                    </label>
+
+                    <label>
+                      <span>Issuer Note</span>
+                      <input id="issuer-note" name="issuerNote" type="text" placeholder="Optional cohort metadata">
+                    </label>
+                  </div>
+
+                  <div class="batch-credentials-field">
+                    <p class="panel-label batch-credentials-heading">Batch Credentials JSON</p>
+
+                    <label
+                      class="file-drop-zone"
+                      id="batch-credentials-dropzone"
+                      for="batch-credentials-file"
+                    >
+                      <div class="file-drop-head">
+                        <span class="file-drop-badge">JSON Batch</span>
+                        <span class="file-drop-kicker">Issuer Intake</span>
+                      </div>
+
+                      <p class="file-drop-title">Drop a credential export here to stage a batch for Merkle building.</p>
+
+                      <div class="file-drop-actions">
+                        <span class="file-drop-trigger">Choose JSON File</span>
+                        <span class="file-drop-meta" id="batch-credentials-file-name">
+                          No batch loaded
+                        </span>
+                      </div>
+                    </label>
+
+                    <input
+                      id="batch-credentials-file"
+                      type="file"
+                      accept=".json,application/json"
+                    >
+
+                    <pre id="batch-credentials-summary" class="batch-credentials-summary">Drop a JSON batch file to stage credentials for Merkle building.</pre>
+
+                    <span class="helper-text file-drop-copy">
+                      Drag in a `.json` export or click the intake panel to choose a batch file.
+                    </span>
+                  </div>
+
+                  <div class="button-row issuer-form-actions">
+                    <button id="build-merkle-tree" type="button">Build Merkle Tree</button>
+                  </div>
+
+                  <p class="helper-text form-helper">
+                    After loading the batch, build the Merkle tree to populate the root and selected proof.
+                  </p>
+                </section>
+              </section>
+
+              <section
+                class="issuer-workbench-page"
+                id="issuer-view-tree"
+                role="tabpanel"
+                aria-labelledby="issuer-view-tree-tab"
+                data-issuer-view="tree"
+                hidden
+              >
+                <div class="merkle-visual-panel merkle-tree-page-panel">
+                  <div class="merkle-panel-head">
+                    <div>
+                      <p class="panel-label">Merkle Tree View</p>
+                      <h3 id="merkle-tree-title">Binary Tree Map</h3>
+                    </div>
+                    <p class="helper-text merkle-panel-copy">
+                      Root is shown at the top, leaves at the bottom. Click a leaf card to load that credential's proof into the issuer form.
+                    </p>
+                  </div>
+
+                  <label class="merkle-tree-root-field">
+                    <span>Merkle Root</span>
+                    <input
+                      id="merkle-root"
+                      name="merkleRoot"
+                      type="text"
+                      placeholder="0x0000000000000000000000000000000000000000000000000000000000000000"
+                    >
+                  </label>
+
+                  <div class="button-row issuer-form-actions merkle-tree-actions">
+                    <button id="generate-qr" type="button" class="ghost-button">Generate QR Batch</button>
+                    <button id="submit-root" type="button" class="ghost-button">Submit Root</button>
+                    <button id="download-qr" type="button" class="ghost-button" disabled>Download QR ZIP</button>
+                  </div>
+
+                  <div id="merkle-legend" class="merkle-legend" aria-hidden="true">
+                    <span class="merkle-legend-chip">Selected proof path</span>
+                    <span class="merkle-legend-chip merkle-legend-chip-muted">Other branches</span>
+                  </div>
+
+                  <div id="merkle-tree-shell" class="merkle-tree-shell is-empty">
+                    <p id="merkle-tree-empty" class="merkle-tree-empty">
+                      Build a batch to render the Merkle tree and highlight the selected credential path.
+                    </p>
+
+                    <div id="merkle-tree-canvas" class="merkle-tree-canvas">
+                      <svg id="merkle-tree-lines" class="merkle-tree-lines" aria-hidden="true"></svg>
+                      <div id="merkle-tree-stage" class="merkle-tree-stage" aria-labelledby="merkle-tree-title"></div>
+                    </div>
+
+                    <pre id="merkle-tree-text" class="merkle-tree-text"></pre>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                class="issuer-workbench-page"
+                id="issuer-view-leaf"
+                role="tabpanel"
+                aria-labelledby="issuer-view-leaf-tab"
+                data-issuer-view="leaf"
+                hidden
+              >
+                <section class="issuer-output-shell issuer-section-card issuer-leaf-panel">
+                  <div class="issuer-section-head">
+                    <div>
+                      <p class="panel-label">Leaf Details</p>
+                      <h3>Selected Credential</h3>
+                    </div>
+                    <p class="helper-text issuer-section-copy">
+                      The active leaf stays here while you build the batch and generate the QR output.
+                    </p>
+                  </div>
+
+                  <div class="issuer-leaf-fields">
+                    <label>
+                      <span>Proof Target Index</span>
+                      <input id="proof-target-index" name="proofTargetIndex" type="number" min="0" placeholder="0">
+                    </label>
+
+                    <label>
+                      <span>Recipient Address</span>
+                      <input id="recipient" name="recipient" type="text" placeholder="0x1234...">
+                    </label>
+
+                    <label>
+                      <span>Credential ID</span>
+                      <input id="credential-id" name="credentialId" type="text" placeholder="CRED-2026-001">
+                    </label>
+
+                    <label>
+                      <span>Achievement Code</span>
+                      <input id="achievement-code" name="achievementCode" type="text" placeholder="SOLIDITY-I">
+                    </label>
+
+                    <label>
+                      <span>Credential Issue Date</span>
+                      <input id="issue-date" name="issueDate" type="date">
+                    </label>
+
+                    <label class="full-width">
+                      <span>Issuer Identifier</span>
+                      <input id="issuer-id" name="issuerId" type="text" placeholder="dept-of-computer-science">
+                    </label>
+
+                    <label class="full-width">
+                      <span>Merkle Proof</span>
+                      <textarea id="issuer-proof-input" name="proofInput" rows="6"></textarea>
+                    </label>
+                  </div>
+
+                  <div class="qr-layout issuer-leaf-qr-layout">
+                    <div class="qr-shell">
+                      <canvas id="qr-code-canvas" width="320" height="320"></canvas>
+                      <p class="helper-text">
+                        This preview follows the selected credential while the ZIP archive contains one QR per batch entry.
+                      </p>
+                    </div>
+
+                    <div class="qr-shell">
+                      <p class="panel-label">Batch QR Summary</p>
+                      <textarea id="qr-payload-output" rows="11" readonly></textarea>
+                    </div>
+                  </div>
+                </section>
+              </section>
+            </form>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

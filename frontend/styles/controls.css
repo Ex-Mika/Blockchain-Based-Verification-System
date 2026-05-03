@@ -1,0 +1,407 @@
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.25rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  color: #1a1310;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    opacity 140ms ease;
+  box-shadow: 0 10px 22px rgba(240, 106, 74, 0.22);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.ghost-button {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.status-grid,
+.form-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.status-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+
+.stat-card {
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stat-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.issuer-form-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.form-span-2 {
+  grid-column: span 2;
+}
+
+label {
+  display: block;
+}
+
+.batch-credentials-field {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.9fr);
+  padding: 1rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+    rgba(7, 9, 13, 0.22);
+  align-items: stretch;
+}
+
+.batch-credentials-heading {
+  margin: 0;
+}
+
+.batch-credentials-heading,
+.file-drop-copy {
+  grid-column: 1 / -1;
+}
+
+.file-drop-zone {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03)),
+    rgba(15, 18, 28, 0.72);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease;
+}
+
+.file-drop-zone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(255, 158, 69, 0.18), transparent 36%),
+    radial-gradient(circle at bottom left, rgba(240, 106, 74, 0.16), transparent 34%);
+  pointer-events: none;
+}
+
+.file-drop-zone > * {
+  position: relative;
+  z-index: 1;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+  font: inherit;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+input[type="file"] {
+  padding: 0.85rem;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(255, 158, 69, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+textarea {
+  resize: vertical;
+}
+
+.file-drop-zone:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 158, 69, 0.32);
+  box-shadow: 0 18px 38px rgba(18, 20, 29, 0.16);
+}
+
+.file-drop-zone.is-dragover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 158, 69, 0.78);
+  box-shadow: 0 24px 42px rgba(240, 106, 74, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 158, 69, 0.14), rgba(240, 106, 74, 0.08)),
+    rgba(15, 18, 28, 0.82);
+}
+
+.file-drop-zone.has-loaded-file .file-drop-meta {
+  color: var(--warning);
+}
+
+.file-drop-head,
+.file-drop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-drop-badge,
+.file-drop-kicker,
+.file-drop-meta {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.file-drop-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--warning);
+}
+
+.file-drop-kicker {
+  color: var(--muted);
+}
+
+.file-drop-title {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.file-drop-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.78rem 1.05rem;
+  border-radius: 999px;
+  color: #1a1310;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(240, 106, 74, 0.22);
+}
+
+.file-drop-meta {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.file-drop-zone.is-dragover .file-drop-meta,
+.file-drop-zone.is-dragover .file-drop-kicker {
+  color: var(--text);
+}
+
+.status-message,
+.result-box {
+  margin-top: 1rem;
+  border-radius: 18px;
+  padding: 1rem;
+}
+
+.status-message {
+  border: 1px solid transparent;
+}
+
+.status-neutral {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+}
+
+.status-success {
+  color: var(--success);
+  border-color: rgba(106, 211, 149, 0.22);
+  background: rgba(106, 211, 149, 0.1);
+}
+
+.status-warning {
+  color: var(--warning);
+  border-color: rgba(255, 207, 97, 0.22);
+  background: rgba(255, 207, 97, 0.1);
+}
+
+.status-error {
+  color: var(--danger);
+  border-color: rgba(255, 127, 117, 0.22);
+  background: rgba(255, 127, 117, 0.1);
+}
+
+.toast-stack {
+  position: fixed;
+  top: 1.4rem;
+  right: 1.4rem;
+  z-index: 40;
+  display: grid;
+  gap: 0.95rem;
+  width: min(calc(100vw - 2rem), 31rem);
+  pointer-events: none;
+}
+
+.toast {
+  position: relative;
+  padding: 1.2rem 1.35rem 1.2rem 1.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  color: var(--text);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04)),
+    rgba(15, 18, 28, 0.94);
+  box-shadow:
+    0 30px 70px rgba(18, 20, 29, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  opacity: 0;
+  transform: translateY(-0.85rem) scale(0.96);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+  overflow: hidden;
+}
+
+.toast::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.5rem;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.toast::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 36%);
+  pointer-events: none;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.toast-success::before {
+  background: linear-gradient(180deg, #8af0b2, #4ec882);
+}
+
+.toast-success {
+  border-color: rgba(106, 211, 149, 0.28);
+  box-shadow:
+    0 32px 76px rgba(18, 20, 29, 0.36),
+    0 0 0 1px rgba(106, 211, 149, 0.16),
+    0 0 32px rgba(106, 211, 149, 0.12);
+}
+
+.toast-warning::before {
+  background: linear-gradient(180deg, #ffd56f, #ffab49);
+}
+
+.toast-warning {
+  border-color: rgba(255, 207, 97, 0.28);
+  box-shadow:
+    0 32px 76px rgba(18, 20, 29, 0.36),
+    0 0 0 1px rgba(255, 207, 97, 0.16),
+    0 0 32px rgba(255, 171, 73, 0.12);
+}
+
+.toast-error::before {
+  background: linear-gradient(180deg, #ff9f94, #ff6f68);
+}
+
+.toast-error {
+  border-color: rgba(255, 127, 117, 0.3);
+  box-shadow:
+    0 34px 82px rgba(18, 20, 29, 0.38),
+    0 0 0 1px rgba(255, 127, 117, 0.18),
+    0 0 34px rgba(255, 111, 104, 0.14);
+}
+
+.toast-neutral::before {
+  background: linear-gradient(180deg, #d9c9ad, #bda47d);
+}
+
+.toast-neutral {
+  border-color: rgba(217, 201, 173, 0.24);
+}
+
+.toast-message {
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.96rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+.result-box {
+  min-height: 168px;
+  overflow: auto;
+  background: rgba(8, 10, 16, 0.72);
+  color: #dce7f7;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#batch-credentials-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

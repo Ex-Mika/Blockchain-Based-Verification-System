@@ -1,0 +1,23 @@
+{
+  "name": "ethereum-thesis",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "start": "node frontend/server.mjs",
+    "start:frontend": "node frontend/server.mjs"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.4",
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.0",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.15.0",
+    "hardhat": "^3.1.11"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

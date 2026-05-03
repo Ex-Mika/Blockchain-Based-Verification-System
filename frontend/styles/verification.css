@@ -1,0 +1,105 @@
+.verification-status-card {
+  display: grid;
+  gap: 0.8rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+    rgba(7, 9, 13, 0.36);
+}
+
+.verification-status-card.is-success {
+  border-color: rgba(106, 211, 149, 0.28);
+  box-shadow: 0 18px 34px rgba(106, 211, 149, 0.1);
+}
+
+.verification-status-card.is-warning {
+  border-color: rgba(255, 207, 97, 0.28);
+  box-shadow: 0 18px 34px rgba(255, 171, 73, 0.1);
+}
+
+.verification-status-card.is-error {
+  border-color: rgba(255, 127, 117, 0.3);
+  box-shadow: 0 18px 34px rgba(255, 111, 104, 0.11);
+}
+
+.verification-status-card.is-neutral {
+  border-color: rgba(217, 201, 173, 0.18);
+}
+
+#credential-verification {
+  scroll-margin-top: 1.5rem;
+}
+
+.verification-status-card h3 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.verification-status-copy {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 68ch;
+}
+
+.verification-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.verification-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.verification-detail-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.verification-card {
+  min-height: 100%;
+}
+
+.detail-list {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.detail-row {
+  display: grid;
+  gap: 0.28rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.detail-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.detail-row dt {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.detail-row dd {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
