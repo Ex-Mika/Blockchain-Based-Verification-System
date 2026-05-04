@@ -44,6 +44,8 @@ export function getCredentialInput(elements) {
   const values = Object.fromEntries(form.entries());
 
   return {
+    holderName: String(values.holderName || "").trim(),
+    credentialTitle: String(values.credentialTitle || "").trim(),
     recipient: String(values.recipient || "").trim(),
     credentialId: String(values.credentialId || "").trim(),
     achievementCode: String(values.achievementCode || "").trim(),
@@ -53,6 +55,8 @@ export function getCredentialInput(elements) {
 }
 
 export function hydrateCredentialForm(elements, credential) {
+  elements.holderNameInput.value = credential.holderName;
+  elements.credentialTitleInput.value = credential.credentialTitle;
   elements.recipientInput.value = credential.recipient;
   elements.credentialIdInput.value = credential.credentialId;
   elements.achievementCodeInput.value = credential.achievementCode;
@@ -125,7 +129,8 @@ function normalizeBatchCredential(credential, index) {
   const normalizedCredential = {};
 
   for (const field of APP_CONFIG.hashing.leafEncoding) {
-    const value = String(credential[field.key] ?? "").trim();
+    const explicitValue = String(credential[field.key] ?? "").trim();
+    const value = explicitValue || deriveCredentialField(field.key, credential, index);
     if (!value) {
       throw new Error(`Batch credential ${index + 1} is missing ${field.label}.`);
     }
@@ -134,4 +139,73 @@ function normalizeBatchCredential(credential, index) {
   }
 
   return normalizedCredential;
+}
+
+function deriveCredentialField(fieldKey, credential, index) {
+  if (fieldKey === "holderName") {
+    return buildFallbackHolderName(credential, index);
+  }
+
+  if (fieldKey === "credentialTitle") {
+    return buildFallbackCredentialTitle(credential);
+  }
+
+  return "";
+}
+
+function buildFallbackHolderName(credential, index) {
+  const directName = String(
+    credential.name
+      ?? credential.fullName
+      ?? credential.studentName
+      ?? credential.learnerName
+      ?? ""
+  ).trim();
+
+  if (directName) {
+    return directName;
+  }
+
+  const credentialId = String(credential.credentialId ?? "").trim();
+  return credentialId
+    ? `Credential Holder ${credentialId}`
+    : `Credential Holder ${index + 1}`;
+}
+
+function buildFallbackCredentialTitle(credential) {
+  const directTitle = String(
+    credential.title
+      ?? credential.certificateTitle
+      ?? credential.courseTitle
+      ?? credential.programTitle
+      ?? ""
+  ).trim();
+
+  if (directTitle) {
+    return directTitle;
+  }
+
+  const sourceEducation = String(credential.sourceSummary?.education ?? "").trim();
+  if (sourceEducation) {
+    return `${formatCodeLabel(sourceEducation)} Credential`;
+  }
+
+  const achievementCode = String(credential.achievementCode ?? "").trim();
+  if (achievementCode) {
+    return `${formatCodeLabel(achievementCode)} Credential`;
+  }
+
+  return "Micro-Credential Certificate";
+}
+
+function formatCodeLabel(value) {
+  return String(value)
+    .replace(/^UCI[-_ ]ADULT[-_ ]?/i, "")
+    .replace(/GT50K/gi, "Above 50K")
+    .replace(/LTE50K/gi, "At Most 50K")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/\b[a-z]/g, (character) => character.toUpperCase());
 }

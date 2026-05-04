@@ -89,6 +89,7 @@ Update [`frontend/config.js`](/C:/Users/georg/Desktop/Ethereum%20Thesis/frontend
 - keep the QR schema stable once real verifier payloads are issued
 
 The current verification flow assumes sorted-pair Merkle hashing with `keccak256`, duplicates odd leaves when building the tree, and packages the proof into a QR payload targeted at Sepolia.
+The credential hash schema includes holder name, credential title, recipient address, credential ID, achievement code, issue date, and issuer ID.
 
 ## Dataset
 
@@ -96,6 +97,12 @@ The workspace now includes a transformed public dataset for Merkle-tree testing:
 
 - [`datasets/adult-uci/adult-credentials-full.json`](/C:/Users/georg/Desktop/Ethereum%20Thesis/datasets/adult-uci/adult-credentials-full.json)
 - [`datasets/adult-uci/adult-credentials-sample-2048.json`](/C:/Users/georg/Desktop/Ethereum%20Thesis/datasets/adult-uci/adult-credentials-sample-2048.json)
+- `datasets/adult-uci/adult-credentials-5.json`
+- `datasets/adult-uci/adult-credentials-10.json`
+- `datasets/adult-uci/adult-credentials-100.json`
+- `datasets/adult-uci/adult-credentials-1000.json`
+- `datasets/adult-uci/adult-credentials-2000.json`
+- `datasets/adult-uci/adult-credentials-10000.json`
 - [`datasets/adult-uci/README.md`](/C:/Users/georg/Desktop/Ethereum%20Thesis/datasets/adult-uci/README.md)
 
 You can regenerate those files with [`scripts/transform-adult-dataset.mjs`](/C:/Users/georg/Desktop/Ethereum%20Thesis/scripts/transform-adult-dataset.mjs).

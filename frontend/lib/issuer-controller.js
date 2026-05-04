@@ -611,6 +611,14 @@ function renderBatchPreviewTable(credentials, elements) {
     const indexTd = document.createElement("td");
     indexTd.textContent = String(i + 1);
 
+    const holderTd = document.createElement("td");
+    holderTd.textContent = cred.holderName || "";
+    holderTd.title = cred.holderName || "";
+
+    const titleTd = document.createElement("td");
+    titleTd.textContent = cred.credentialTitle || "";
+    titleTd.title = cred.credentialTitle || "";
+
     const recipientTd = document.createElement("td");
     const addr = cred.recipient || "";
     recipientTd.textContent = addr.length > 14
@@ -627,7 +635,7 @@ function renderBatchPreviewTable(credentials, elements) {
     const dateTd = document.createElement("td");
     dateTd.textContent = cred.issueDate || "";
 
-    tr.append(indexTd, recipientTd, credIdTd, achieveTd, dateTd);
+    tr.append(indexTd, holderTd, titleTd, recipientTd, credIdTd, achieveTd, dateTd);
     tbody.appendChild(tr);
   }
 

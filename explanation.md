@@ -29,7 +29,9 @@ This project issues micro-credentials off-chain, groups them into a Merkle tree,
 
 - Lines `3-12` set the target network to Ethereum Sepolia, chain ID `11155111`.
 - Lines `14-28` define the deployed contract address and the read/write ABI used by the frontend.
-- Lines `30-39` are critical because they define the exact credential fields and their order in the leaf hash:
+- Lines `30-41` are critical because they define the exact credential fields and their order in the leaf hash:
+  - `holderName`
+  - `credentialTitle`
   - `recipient`
   - `credentialId`
   - `achievementCode`

@@ -51,6 +51,8 @@ export function getElements() {
     proofIndexDisplay: document.querySelector("#proof-index-display"),
     issuerProofInput: document.querySelector("#issuer-proof-input"),
     issuerForm: document.querySelector("#issuer-form"),
+    holderNameInput: document.querySelector("#holder-name"),
+    credentialTitleInput: document.querySelector("#credential-title"),
     recipientInput: document.querySelector("#recipient"),
     credentialIdInput: document.querySelector("#credential-id"),
     achievementCodeInput: document.querySelector("#achievement-code"),

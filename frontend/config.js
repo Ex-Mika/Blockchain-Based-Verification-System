@@ -31,6 +31,8 @@ export const APP_CONFIG = {
     pairing: "sorted",
     oddLeafStrategy: "duplicate-last",
     leafEncoding: [
+      { key: "holderName", label: "Holder Name", type: "string" },
+      { key: "credentialTitle", label: "Credential Title", type: "string" },
       { key: "recipient", label: "Recipient Address", type: "address" },
       { key: "credentialId", label: "Credential ID", type: "string" },
       { key: "achievementCode", label: "Achievement Code", type: "string" },

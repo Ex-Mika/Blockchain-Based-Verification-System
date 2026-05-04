@@ -60,6 +60,8 @@ export function createVerifierController({ elements }) {
       icon: "waiting"
     });
     renderDetailList(elements.verificationOwnerDetails, [
+      ["Holder Name", "N/A"],
+      ["Credential Title", "N/A"],
       ["Recipient", "N/A"],
       ["Credential ID", "N/A"],
       ["Achievement", "N/A"],

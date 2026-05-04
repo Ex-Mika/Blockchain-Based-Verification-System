@@ -214,21 +214,28 @@
 }
 
 .verify-card {
+  --verify-card-text: #fffaf0;
+  --verify-card-muted: #eadbc1;
+  --verify-card-border: rgba(217, 201, 173, 0.18);
+  --verify-card-accent: var(--accent-strong);
+
   min-width: 0;
   padding: 1.2rem;
-  color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--verify-card-text);
+  border: 1px solid var(--verify-card-border);
   border-radius: 24px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
-    rgba(7, 9, 13, 0.48);
-  box-shadow: 0 18px 36px rgba(18, 20, 29, 0.2);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),
+    rgba(15, 18, 28, 0.9);
+  box-shadow:
+    0 18px 36px rgba(18, 20, 29, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(14px);
 }
 
 .verify-card .panel-label {
   margin-bottom: 0.9rem;
-  color: var(--accent);
+  color: var(--verify-card-accent);
   font-size: 0.72rem;
 }
 
@@ -242,7 +249,7 @@
   display: grid;
   gap: 0.32rem;
   padding: 0.86rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(217, 201, 173, 0.16);
 }
 
 .verification-page .detail-row:first-child {
@@ -255,17 +262,19 @@
 }
 
 .verification-page .detail-row dt {
-  color: var(--muted);
+  color: var(--verify-card-muted, #eadbc1);
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.68rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .verification-page .detail-row dd {
   margin: 0;
-  color: var(--text);
+  color: var(--verify-card-text, #fffaf0);
   font-size: 0.95rem;
+  font-weight: 500;
   line-height: 1.55;
   overflow-wrap: anywhere;
 }

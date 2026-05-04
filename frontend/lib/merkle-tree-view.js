@@ -117,7 +117,9 @@ export function createMerkleTreeView({ state, elements }) {
       `Leaf count: ${leafCount}`,
       `Level widths: ${merkleArtifacts.levels.map((level) => level.length).join(" -> ")}`,
       `Selected proof target: ${targetIndex}`,
-      `Selected credential: ${selectedCredential.credentialId}`,
+      `Holder: ${selectedCredential.holderName}`,
+      `Credential title: ${selectedCredential.credentialTitle}`,
+      `Credential ID: ${selectedCredential.credentialId}`,
       `Recipient: ${selectedCredential.recipient}`,
       `Achievement code: ${selectedCredential.achievementCode}`,
       `Selected leaf hash: ${merkleArtifacts.leaves[targetIndex]}`,
@@ -131,7 +133,7 @@ export function createMerkleTreeView({ state, elements }) {
       ...sampleIndexes.map((index) => {
         const credential = credentials[index];
         const marker = index === targetIndex ? "*" : "-";
-        return `${marker} [${index}] ${credential.credentialId} | ${shortenAddress(credential.recipient)} | ${shortenHash(merkleArtifacts.leaves[index])}`;
+        return `${marker} [${index}] ${credential.holderName} | ${credential.credentialTitle} | ${shortenHash(merkleArtifacts.leaves[index])}`;
       }),
       "",
       `Omitted leaves: ${leafCount - sampleIndexes.length}`
@@ -416,7 +418,7 @@ function getMerkleNodeTitle(node) {
   }
 
   if (node.isLeaf) {
-    return node.credential?.credentialId || `Leaf ${node.nodeIndex}`;
+    return node.credential?.holderName || node.credential?.credentialId || `Leaf ${node.nodeIndex}`;
   }
 
   return `Intermediate Hash ${node.nodeIndex}`;
@@ -428,7 +430,7 @@ function getMerkleNodeMeta(node) {
   }
 
   if (node.isLeaf) {
-    return `${shortenAddress(node.credential.recipient)} | ${node.credential.achievementCode}`;
+    return `${node.credential.credentialTitle} | ${shortenAddress(node.credential.recipient)}`;
   }
 
   if (node.duplicatesLastChild) {

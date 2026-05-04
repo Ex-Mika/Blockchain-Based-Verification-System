@@ -417,6 +417,8 @@ async function buildQrArchiveEntry({
     manifestEntry: {
       index,
       fileName,
+      holderName: credential.holderName,
+      credentialTitle: credential.credentialTitle,
       credentialId: credential.credentialId,
       achievementCode: credential.achievementCode,
       issueDate: credential.issueDate,
