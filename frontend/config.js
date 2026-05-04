@@ -63,6 +63,7 @@ export const APP_CONFIG = {
     hashChunkSize: 512,
     treeChunkSize: 1024,
     qrArchiveImageWidth: 640,
+    qrPreviewImageWidth: 1024,
     qrRenderConcurrency: null,
     textSummaryLeafSampleSize: 18
   }

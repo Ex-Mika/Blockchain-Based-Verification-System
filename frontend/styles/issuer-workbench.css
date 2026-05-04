@@ -430,6 +430,7 @@
   align-items: center;
   gap: 0.25rem;
   width: fit-content;
+  max-width: 100%;
   align-self: center;
   padding: 0.4rem 0.5rem;
   border-radius: 14px;
@@ -444,8 +445,9 @@
 
 .leaf-qr-preview-card canvas {
   display: block;
-  width: 220px;
-  height: 220px;
+  width: min(350px, calc(100vw - 3rem));
+  height: auto;
+  aspect-ratio: 1 / 1;
   border-radius: 14px;
   background: #fff8ef;
 }

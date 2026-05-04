@@ -71,7 +71,7 @@ const qrArchiveRenderOptions = {
 const qrPreviewRenderOptions = {
   ...qrBaseRenderOptions,
   type: "png",
-  width: 420
+  width: resolveQrArchiveImageWidth(APP_CONFIG.performance.qrPreviewImageWidth)
 };
 
 const qrRenderPool = createQrRenderPool({
